@@ -19,10 +19,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     private static final double CUP_OBJECT_THRESHOLD_CM = 6.0; // CM
     private static final double REDUCE_SPEED_MULTIPLIER = 0.25;
 
-    private static final double CUP_DUMPED_POSITION = 0;
-    private static final double CUP_TILTED_POSITION = 0.6;
-    private static final double CUP_DOWN_POSITION = 1;
-
     private static final double INTAKE_SPEED = 0.5;
 
     private Config config;
@@ -32,7 +28,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     private DcMotorEx intake;
     private DcMotorEx turnTableSpinner;
 
-    private Servo cupServo;
     private RevColorSensorV3 cupDistanceSensor;
 
     private boolean shouldOverrideSpeedReduction = false;
@@ -69,14 +64,11 @@ public class Teleop extends TeleopMode<MecanumDrive> {
         intake = robot.GetMotor("intake", true);
         turnTableSpinner = robot.GetMotor("turnTable", false);
 
-        cupServo = hardwareMap.servo.get("cupServo");
-
-
         cupDistanceSensor = hardwareMap.get(RevColorSensorV3.class, "cupDistanceSensor");
     }
 
     private void InitializeServos() {
-        cupServo.setPosition(1);
+        liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
     }
 
     @Override
@@ -100,7 +92,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
         // Detect Cup
         if(IsObjectInCup() && !objectInCupToggle) {
             objectInCupToggle = true;
-            cupServo.setPosition(CUP_TILTED_POSITION);
+            liftController.SetCupPosition(LiftController.CupPosition.TILTED_POSITION);
         } else if(objectInCupToggle && !IsObjectInCup()) {
             objectInCupToggle = false;
         }
@@ -210,9 +202,9 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             case FtcGamePad.GAMEPAD_B:
 
                 if(pressed) {
-                    cupServo.setPosition(CUP_DUMPED_POSITION);
+                    liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
                 } else {
-                    cupServo.setPosition(CUP_DOWN_POSITION);
+                    liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
                 }
 
                 break;
