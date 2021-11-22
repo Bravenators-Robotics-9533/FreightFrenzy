@@ -8,12 +8,12 @@ public class Specifications extends RobotSpecifications {
 
     public Specifications() {
         super(MecanumDrive.GenerateMotors(
-                "fl", true,
-                "fr", false,
-                "bl", true,
-                "br", false
+                "fl", false,
+                "fr", true,
+                "bl", false,
+                "br", true
                 ), MecanumDrive.class,
-                1120, 1, 3.78, 11.9);
+                560, 1, 3.70, (16.45 + 11.50 / 2.0));
 
         this.useVelocity = true;
         this.maxVelocity = 2800;

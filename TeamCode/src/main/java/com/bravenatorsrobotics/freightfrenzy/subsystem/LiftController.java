@@ -66,8 +66,10 @@ public class LiftController extends AbstractSubSystemController {
     }
 
     public void ZeroLift() {
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         if(!liftTouchSensor.isPressed())
-            liftMotor.setPower(-0.1);
+            liftMotor.setPower(-LIFT_POWER / 2.0);
 
         while(!liftTouchSensor.isPressed()) {
             if(!operationMode.opModeIsActive()) break;

@@ -112,10 +112,10 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     }
 
     private void HandleGamePadDrive() {
-        double v = Math.pow(gamepad1.left_stick_y, 3);
-        double h = Math.pow(gamepad1.left_stick_x, 3) - Math.pow(driverGamePad.getLeftTrigger(), 3)
-                + Math.pow(driverGamePad.getRightTrigger(), 3);
-        double r = -Math.pow(gamepad1.right_stick_x, 3);
+        double v = -Math.pow(gamepad1.left_stick_y, 3);
+        double h = -Math.pow(gamepad1.left_stick_x, 3) + Math.pow(driverGamePad.getLeftTrigger(), 3)
+                - Math.pow(driverGamePad.getRightTrigger(), 3);
+        double r = Math.pow(gamepad1.right_stick_x, 3);
 
         if(shouldReverse) {
             v = -v;

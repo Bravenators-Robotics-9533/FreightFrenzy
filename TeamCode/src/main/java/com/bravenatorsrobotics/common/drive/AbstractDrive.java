@@ -54,7 +54,7 @@ public abstract class AbstractDrive {
     public void DriveByEncoders(double power, int ticks) { DriveByEncoders(power, ticks, ticks); } // Binding
 
     public abstract void DriveByInches(double power, double leftInches, double rightInches);
-    public void DriveByInches(double power, int inches) { DriveByInches(power, inches, inches); }  // Binding
+    public void DriveByInches(double power, double inches) { DriveByInches(power, inches, inches); }  // Binding
 
     public abstract void TurnDegrees(double power, int degrees, TurnDirection turnDirection);
 }

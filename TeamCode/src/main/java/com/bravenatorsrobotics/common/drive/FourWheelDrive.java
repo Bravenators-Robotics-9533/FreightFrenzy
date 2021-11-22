@@ -115,7 +115,7 @@ public class FourWheelDrive extends AbstractDrive {
         double distance = Math.abs(degrees) * (pivotCircleCircumference / 360.0);
 
         // Reverse if turning counter-clockwise
-        if(turnDirection == TurnDirection.COUNTER_CLOCKWISE)
+        if(turnDirection == TurnDirection.CLOCKWISE)
             distance = -distance;
 
         // Convert Inches to Encoder Ticks
