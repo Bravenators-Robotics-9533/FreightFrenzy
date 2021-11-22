@@ -81,6 +81,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
     @Override
     public void OnStart() {
+        InitializeServos();
         liftController.ZeroLift();
 
         telemetry.clearAll();
@@ -257,10 +258,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     }
 
     private void PrintControls() {
-        telemetry.log().add("DRIVER CONTROLS");
-        telemetry.log().add("(BACK) Emergency Movement Override");
-        telemetry.log().add("");
-
         telemetry.log().add("OPERATOR CONTROLS");
         telemetry.log().add("(BACK) Reverse Turn-Table Direction");
         telemetry.log().add("(X) Turn-Table");
