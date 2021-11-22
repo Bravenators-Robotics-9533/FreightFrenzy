@@ -2,11 +2,11 @@ package com.bravenatorsrobotics.freightfrenzy.subsystem;
 
 import com.bravenatorsrobotics.common.operation.OperationMode;
 
-public abstract class AbstractSubSystem {
+public abstract class AbstractSubSystemController {
 
-    protected final OperationMode<?> operationMode;
+    protected OperationMode<?> operationMode;
 
-    public AbstractSubSystem(OperationMode<?> operationMode) {
+    public AbstractSubSystemController(OperationMode<?> operationMode) {
         this.operationMode = operationMode;
     }
 

@@ -4,24 +4,17 @@ import com.bravenatorsrobotics.common.core.FtcGamePad;
 import com.bravenatorsrobotics.common.drive.MecanumDrive;
 import com.bravenatorsrobotics.common.operation.TeleopMode;
 import com.bravenatorsrobotics.common.utils.PowerScale;
+import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="Teleop")
 public class Teleop extends TeleopMode<MecanumDrive> {
-
-    // TODO: Replace with tested values
-    private static final int LIFT_STAGE_1 = 45;
-    private static final int LIFT_STAGE_2 = 185;
-    private static final int LIFT_STAGE_3 = 357;
-
-    private static final double LIFT_POWER = 0.50;
 
     private static final double CUP_OBJECT_THRESHOLD_CM = 6.0; // CM
     private static final double REDUCE_SPEED_MULTIPLIER = 0.25;
@@ -34,12 +27,12 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
     private Config config;
 
-    private DcMotorEx lift;
+    private LiftController liftController;
+
     private DcMotorEx intake;
     private DcMotorEx turnTableSpinner;
 
     private Servo cupServo;
-    private TouchSensor liftTouchSensor;
     private RevColorSensorV3 cupDistanceSensor;
 
     private boolean shouldOverrideSpeedReduction = false;
@@ -48,10 +41,11 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
     private boolean shouldZeroLiftEncoder = false;
 
-    private final PowerScale drivePowerScale = new PowerScale(this, 1.0 / 0.25);
-    private double currentV = 0.0;
-    private double currentH = 0.0;
-    private double currentR = 0.0;
+    // TODO: Reimplement
+//    private final PowerScale drivePowerScale = new PowerScale(this, 1.0 / 0.25);
+//    private double currentV = 0.0;
+//    private double currentH = 0.0;
+//    private double currentR = 0.0;
 
     private boolean objectInCupToggle = false;
 
@@ -66,20 +60,17 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
         config = new Config(hardwareMap.appContext);
 
+        liftController = new LiftController(this);
+
         // Reverse the turn table power if on red alliance
         if(config.allianceColor == Config.AllianceColor.BLUE)
             turnTablePower = -turnTablePower;
-
-        lift = robot.GetMotor("lift", false);
-        lift.setTargetPositionTolerance(1);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = robot.GetMotor("intake", true);
         turnTableSpinner = robot.GetMotor("turnTable", false);
 
         cupServo = hardwareMap.servo.get("cupServo");
 
-        liftTouchSensor = hardwareMap.touchSensor.get("liftTouchSensor");
 
         cupDistanceSensor = hardwareMap.get(RevColorSensorV3.class, "cupDistanceSensor");
     }
@@ -88,33 +79,20 @@ public class Teleop extends TeleopMode<MecanumDrive> {
         cupServo.setPosition(1);
     }
 
-    private void ZeroLift() {
-        if(!liftTouchSensor.isPressed())
-            lift.setPower(-0.1);
-
-        while(!liftTouchSensor.isPressed()) {
-            if(!opModeIsActive()) break;
-        }
-
-        lift.setPower(0);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
     @Override
     public void OnStart() {
-        telemetry.clearAll();
+        liftController.ZeroLift();
 
-        ZeroLift();
+        telemetry.clearAll();
     }
 
     @Override
     public void OnUpdate() {
 
-        if(shouldZeroLiftEncoder && liftTouchSensor.isPressed()) {
-            lift.setPower(0);
-            lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(shouldZeroLiftEncoder && liftController.IsLiftSensorPressed()) {
+            liftController.SetPower(0);
+            liftController.GetLiftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftController.GetLiftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shouldZeroLiftEncoder = false;
         }
 
@@ -129,7 +107,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
         HandleGamePadDrive();
 
         // Log Important Information
-        telemetry.addData("Is Lift Button Pressed", liftTouchSensor.isPressed());
+        telemetry.addData("Is Lift Button Pressed", liftController.IsLiftSensorPressed());
         telemetry.addData("Is Reversed", shouldReverse);
         telemetry.addData("Should Reduce Mode", shouldReduceSpeed);
         telemetry.update();
@@ -216,7 +194,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
                 break;
 
-            // TODO: Make sure this doesn't fight with GAMEPAD_A
             // Reverse Intake
             case FtcGamePad.GAMEPAD_Y:
 
@@ -242,8 +219,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Automatic Lift Down
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
-                    lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    lift.setPower(-LIFT_POWER);
+                    liftController.SetPower(-LiftController.LIFT_POWER);
                     shouldZeroLiftEncoder = true;
                 }
 
@@ -252,9 +228,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Automatic Lift Position 1
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
                 if(pressed) {
-                    lift.setTargetPosition(LIFT_STAGE_1);
-                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    lift.setPower(LIFT_POWER);
+                    liftController.GoToStage(LiftController.LiftStage.STAGE_1);
                 }
 
                 break;
@@ -262,9 +236,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Automatic Lift Position 2
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if(pressed) {
-                    lift.setTargetPosition(LIFT_STAGE_2);
-                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    lift.setPower(LIFT_POWER);
+                    liftController.GoToStage(LiftController.LiftStage.STAGE_2);
                 }
 
                 break;
@@ -272,9 +244,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Automatic Lift Position 3
             case FtcGamePad.GAMEPAD_DPAD_RIGHT:
                 if(pressed) {
-                    lift.setTargetPosition(LIFT_STAGE_3);
-                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    lift.setPower(LIFT_POWER);
+                    liftController.GoToStage(LiftController.LiftStage.STAGE_3);
                 }
 
                 break;
