@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class LiftController extends AbstractSubSystemController {
 
@@ -71,13 +72,19 @@ public class LiftController extends AbstractSubSystemController {
         if(!liftTouchSensor.isPressed())
             liftMotor.setPower(-LIFT_POWER / 2.0);
 
-        while(!liftTouchSensor.isPressed()) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+
+        while(!liftTouchSensor.isPressed() && timer.seconds() <= 1.5) { // Make sure if it gets stuck we don't get shook.
             if(!operationMode.opModeIsActive()) break;
         }
 
         liftMotor.setPower(0);
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if(liftTouchSensor.isPressed()) { // Only reset if the lift actually hit the button
+            liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
     public void SetCupPosition(CupPosition cupPosition) {
