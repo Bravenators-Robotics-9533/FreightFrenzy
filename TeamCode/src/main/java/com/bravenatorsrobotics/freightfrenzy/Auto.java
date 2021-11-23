@@ -49,25 +49,22 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     @Override
     public void OnStart() {
 
-        // 1 if on blue alliance -1 if on red alliance
-        int movementModifier = config.allianceColor == Config.AllianceColor.BLUE ? 1 : -1;
-
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Call the appropriate method and pass in the movement modifier
         switch (config.startingPosition) {
             case WAREHOUSE:
-                RunWarehouse(movementModifier);
+                RunWarehouse();
                 break;
             case STORAGE_UNIT:
-                RunStorageUnit(movementModifier);
+                RunStorageUnit();
                 break;
         }
     }
 
 
     // Warehouse Code (compatible for both sides with the 'movementModifier')
-    private void RunWarehouse(int movementModifier) {
+    private void RunWarehouse() {
         // Drive to the alliance shipping hub
 
         // Deliver the preloaded block (make sure the robot has this)
@@ -76,7 +73,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     }
 
     // Storage Unit Code (compatible for both sides with the 'movementModifier')
-    private void RunStorageUnit(int movementModifier) {
+    private void RunStorageUnit() {
         final double startAngle = imuController.GetZAxis();
 
         // Drive to the turn table
@@ -85,6 +82,11 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         robot.drive.DriveByInches(0.25, 5);
 
         sleep(SLEEP_AMOUNT_MILLIS);
+
+        // 180 if blue
+        if(config.allianceColor == Config.AllianceColor.BLUE) {
+            robot.drive.TurnDegrees(0.25, 180, AbstractDrive.TurnDirection.CLOCKWISE);
+        }
 
         // TODO: Use Encoders
         // Strafe to the turn-table
@@ -103,11 +105,30 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         // Turn Towards Turn-Table
         // TODO: Reverse
-        robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+        robot.drive.TurnDegrees(0.25,
+                config.allianceColor == Config.AllianceColor.RED ?
+                        15 :
+                        40,
+                config.allianceColor == Config.AllianceColor.RED ?
+                        AbstractDrive.TurnDirection.COUNTER_CLOCKWISE :
+                        AbstractDrive.TurnDirection.CLOCKWISE);
+
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // If blue strafe into turn-table
+//        if(config.allianceColor == Config.AllianceColor.BLUE) {
+//            robot.drive.Drive(0, 0.25, 0);
+//
+//            while(timer.seconds() < 0.25) { // Strafe Seconds
+//                if(!opModeIsActive()) break;
+//            }
+//
+//            robot.drive.Stop();
+//        }
 
         // Spin the turn-table
         // TODO: Use the config
-        turnTableSpinner.setPower(1);
+        turnTableSpinner.setPower(config.allianceColor == Config.AllianceColor.RED ? 1 : -1);
 
         timer.reset();
 
