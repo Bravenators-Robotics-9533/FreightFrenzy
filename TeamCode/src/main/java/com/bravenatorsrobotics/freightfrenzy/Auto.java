@@ -181,10 +181,8 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final int degreesTowardsShippingHub = 63;
-        robot.drive.TurnDegrees(0.50, degreesTowardsShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE); // Turn to shipping hub
-
-        sleep(SLEEP_AMOUNT_MILLIS);
+        int degreesTowardsShippingHub = 59;
+        boolean isHeight3 = false;
 
         if(driveDifference < 550) {
             // Position 1
@@ -194,13 +192,21 @@ public class Auto extends AutonomousMode<MecanumDrive> {
             // Position 3
             telemetry.log().add("Position 3");
             liftController.GoToStage(LiftController.LiftStage.STAGE_3);
+            isHeight3 = true;
         } else {
             // Position 2
             telemetry.log().add("Position 2");
             liftController.GoToStage(LiftController.LiftStage.STAGE_2);
+            degreesTowardsShippingHub -= 5;
         }
 
-        robot.drive.DriveByInches(0.15, -4.75); // Drive to shipping hub
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        robot.drive.TurnDegrees(0.50, degreesTowardsShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE); // Turn to shipping hub\
+
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        robot.drive.DriveByInches(0.15, !isHeight3 ? -4.75 : -5.20); // Drive to shipping hub
 
         timer.reset();
 
@@ -218,7 +224,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Back up away from goal
-        robot.drive.DriveByInches(0.50, 15.0);
+        robot.drive.DriveByInches(0.50, 12.5);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         robot.drive.TurnDegrees(0.25, degreesTowardsShippingHub, AbstractDrive.TurnDirection.CLOCKWISE); // Turn to shipping hub
