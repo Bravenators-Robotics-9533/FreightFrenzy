@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -20,6 +21,8 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     private static final double REDUCE_SPEED_MULTIPLIER = 0.25;
 
     private static final double INTAKE_SPEED = 0.5;
+
+    private static final double MAX_ROBOT_SPEED = 0.75;
 
     private Config config;
 
@@ -127,10 +130,11 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             h *= REDUCE_SPEED_MULTIPLIER;
             r *= REDUCE_SPEED_MULTIPLIER;
         }
-//
-//        this.currentV = this.drivePowerScale.GetPower(v, this.currentV);
-//        this.currentH = this.drivePowerScale.GetPower(h, this.currentH);
-//        this.currentR = this.drivePowerScale.GetPower(r, this.currentR);
+
+        // Scale power to maximum speed
+        v = Range.clip(v, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+        h = Range.clip(h, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+        r = Range.clip(r, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
 
         super.robot.drive.Drive(v, h, r);
     }
