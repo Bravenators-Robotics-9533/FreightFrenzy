@@ -18,7 +18,7 @@ public class Specifications extends RobotSpecifications {
         this.useVelocity = true;
         this.maxVelocity = 2800;
         this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
-        this.shouldTunePIDF = true;
+        this.shouldTunePIDF = false;
         this.debugModeEnabled = true;
     }
 

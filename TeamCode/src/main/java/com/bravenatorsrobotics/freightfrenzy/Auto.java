@@ -72,6 +72,19 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         // Strafe and park fully in the warehouse
     }
 
+    private void Strafe(double power, double time) {
+        ElapsedTime timer = new ElapsedTime();
+
+        robot.drive.Drive(0, power, 0);
+
+        while(opModeIsActive()) {
+            if(timer.seconds() >= time) {
+                robot.drive.Stop();
+                break;
+            }
+        }
+    }
+
     // Storage Unit Code (compatible for both sides with the 'movementModifier')
     private void RunRedStorageUnit() {
         final double startAngle = imuController.GetZAxis();
@@ -101,7 +114,16 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         // Turn Towards Turn-Table
         // TODO: Reverse
         robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+        sleep(SLEEP_AMOUNT_MILLIS);
 
+        // Strafe into turn-table
+        robot.drive.Drive(0, 0.05, 0);
+        timer.reset();
+        while(timer.seconds() < 0.01) { // Strafe Seconds
+            if(!opModeIsActive()) break;
+        }
+        robot.drive.Stop();
+        robot.drive.Drive(0, 0, 0);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Spin the turn-table
@@ -141,7 +163,6 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Strafe to the block
-
         timer.reset();
 
         robot.drive.Drive(0, -0.25, 0);
@@ -181,7 +202,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        int degreesTowardsShippingHub = 59;
+        int degreesTowardsShippingHub = 45;
         boolean isHeight3 = false;
 
         if(driveDifference < 550) {
@@ -202,7 +223,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.TurnDegrees(0.50, degreesTowardsShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE); // Turn to shipping hub\
+        robot.drive.TurnDegrees(0.50, degreesTowardsShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE); // Turn to shipping hub
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -247,75 +268,49 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     private void RunBlueStorageUnit() {
         final double startAngle = imuController.GetZAxis();
 
-        // Drive to the turn table
-
-        // Drive off the wall
-        robot.drive.DriveByInches(0.25, 5);
-
+        // Strafe off wall
+        Strafe(-0.25, 1.20);
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.TurnDegrees(0.5, 180, AbstractDrive.TurnDirection.CLOCKWISE);
+        // Drive To wall
+        robot.drive.DriveByInches(0.25, -20);
 
+        // Strafe into duck spinner
+        sleep(SLEEP_AMOUNT_MILLIS);
+        Strafe(0.15, 1.0);
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // TODO: Use Encoders
-        // Strafe to the turn-table
-        ElapsedTime timer = new ElapsedTime();
-        timer.reset();
-
-        robot.drive.Drive(0, 0.25, 0);
-
-        while(timer.seconds() < 1.75) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-
-        robot.drive.Stop();
-
-        // Turn towards turn-table
-        sleep(SLEEP_AMOUNT_MILLIS);
-        robot.drive.TurnDegrees(0.25, 55, AbstractDrive.TurnDirection.CLOCKWISE);
-        sleep(SLEEP_AMOUNT_MILLIS);
-
-        // Strafe into turn-table
-        robot.drive.Drive(0, 0.10, 0);
-        timer.reset();
-        while(timer.seconds() < 0.01) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-        robot.drive.Stop();
-        sleep(SLEEP_AMOUNT_MILLIS);
-
-        // Spin turn-table
+        // Spin Turn-Table
         turnTableSpinner.setPower(-1);
-        timer.reset();
-        while(timer.seconds() < 2.5) { // Turn-Table
-            if(!opModeIsActive()) break;
-        }
+        sleep(2500);
         turnTableSpinner.setPower(0);
 
         // Strafe away from turn-table
         sleep(SLEEP_AMOUNT_MILLIS);
-        timer.reset();
-        robot.drive.Drive(0, -0.25, 0);
-        while(timer.seconds() < 0.50) { // Strafe Seconds
-            if(!opModeIsActive()) break;
+        Strafe(-0.25, 0.65);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Straighten out into wall
+        robot.drive.DriveByInches(0.25, -4.0);
+
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        final int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
+
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Drive past the blocks
+        robot.drive.Drive(0.25, 0, 0);
+
+        while(opModeIsActive()) {
+            if(sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85) {
+                telemetry.addData("Distance", robot.GetDriveMotors()[0].getCurrentPosition() - startTicks);
+                telemetry.update();
+                robot.Stop();
+//                break;
+            }
         }
-        robot.drive.Stop();
 
-        // Straighten out
-        sleep(SLEEP_AMOUNT_MILLIS);
-        robot.drive.TurnDegrees(0.25, (int) (imuController.GetZAxis() - 90), AbstractDrive.TurnDirection.CLOCKWISE);
-
-        // Strafe to the block
-        sleep(SLEEP_AMOUNT_MILLIS);
-        timer.reset();
-        robot.drive.Drive(0, -0.12, 0);
-        while(timer.seconds() < 1.1) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-        robot.drive.Stop();
-
-        sleep(SLEEP_AMOUNT_MILLIS);
     }
 
     @Override
