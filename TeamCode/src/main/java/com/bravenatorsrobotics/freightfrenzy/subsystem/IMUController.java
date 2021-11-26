@@ -1,17 +1,14 @@
 package com.bravenatorsrobotics.freightfrenzy.subsystem;
 
-import android.graphics.drawable.GradientDrawable;
-
 import com.bravenatorsrobotics.common.operation.OperationMode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
-import org.checkerframework.checker.index.qual.LTEqLengthOf;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-public class IMUController extends AbstractSubSystemController {
+public class IMUController extends AbstractController {
 
     private final BNO055IMU.Parameters parameters;
 
