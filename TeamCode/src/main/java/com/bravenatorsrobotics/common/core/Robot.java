@@ -44,6 +44,17 @@ public class Robot<DriveType extends AbstractDrive> {
                 this.driveMotors[i].setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
+        // Calculate PIDF Values
+        if(specifications.shouldTunePIDF) {
+            final double f = 327767.0 / specifications.maxVelocity;
+            final double p = f * 0.1;
+            final double i = p * 0.1;
+
+            for(DcMotorEx motor : this.driveMotors) {
+                motor.setVelocityPIDFCoefficients(p, i, 0.0, f);
+            }
+        }
+
         // Create Instance of Drive
         try {
             Constructor<DriveType> constructor = ((Class<DriveType>) specifications.driveType).getConstructor(Robot.class);

@@ -53,6 +53,13 @@ public class RobotSpecifications {
     public boolean debugModeEnabled = false;
 
     /**
+     * This will attempt to calculate the PIDF values for the drive motors based on the
+     * maximum velocity. Enabling this feature may result in more efficient and accurate
+     * drive movements.
+     **/
+    public boolean shouldTunePIDF = false;
+
+    /**
      * The Zero power behavior.
      */
     public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
