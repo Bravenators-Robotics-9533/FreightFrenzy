@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class LiftController extends AbstractSubSystemController {
+public class LiftController extends AbstractController {
 
     public enum LiftStage {
         STAGE_1(45),
