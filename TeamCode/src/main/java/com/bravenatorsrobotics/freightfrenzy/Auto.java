@@ -74,6 +74,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
     private void Strafe(double power, double time) {
         ElapsedTime timer = new ElapsedTime();
+        timer.reset();
 
         robot.drive.Drive(0, power, 0);
 
@@ -82,6 +83,15 @@ public class Auto extends AutonomousMode<MecanumDrive> {
                 robot.drive.Stop();
                 break;
             }
+        }
+    }
+
+    private void sleep(int millis) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+
+        while(opModeIsActive()) {
+            if(timer.milliseconds() >= millis) break;
         }
     }
 
@@ -178,7 +188,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         robot.drive.Drive(-0.10, 0, 0);
 
         final int distanceToShippingHub = 1150;
-        int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
+        final int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
 
         while(opModeIsActive()) {
             double distance = sideDistanceSensor.getDistance(DistanceUnit.MM);
@@ -295,6 +305,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
+        final int distanceToShippingHub = 200000; // TODO: Enter the right amount
         final int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
 
         sleep(SLEEP_AMOUNT_MILLIS);
@@ -303,13 +314,60 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         robot.drive.Drive(0.25, 0, 0);
 
         while(opModeIsActive()) {
-            if(sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85) {
+            if(sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85 || (robot.GetDriveMotors()[0].getCurrentPosition() - startTicks) >= distanceToShippingHub) {
+                // FIXME: Doesn't Calculate the Encoder Value Correctly???
                 telemetry.addData("Distance", robot.GetDriveMotors()[0].getCurrentPosition() - startTicks);
                 telemetry.update();
                 robot.Stop();
 //                break;
             }
         }
+
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        final int distanceToDrive = distanceToShippingHub - (robot.GetDriveMotors()[0].getCurrentPosition() - startTicks);
+
+        // Drive to the shipping hub
+        robot.drive.DriveByEncoders(0.25, distanceToShippingHub);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Turn to the goal
+        robot.drive.TurnDegrees(0.25, 45, AbstractDrive.TurnDirection.CLOCKWISE);
+
+        // Temporary Break
+        if(true)
+            return;
+
+        // TODO: Lift the lift
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        final double shippingHubDriveDistance = 3.0;
+
+        // Drive into the shipping hub
+        robot.drive.DriveByInches(0.25, shippingHubDriveDistance);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Dump the cup
+        liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
+        sleep(600);
+        liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
+        sleep(500);
+        liftController.ZeroLift();
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Back up away from shipping hub
+        robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Turn back
+        robot.drive.TurnDegrees(0.25, 45, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+
+        // Drive back to wall
+        final int distanceToWall = robot.GetDriveMotors()[0].getCurrentPosition() - startTicks;
+        robot.drive.DriveByEncoders(0.25, -distanceToWall);
+
+        // Strafe into the shipping hub tape
+        Strafe(-0.25, 0.75);
 
     }
 
