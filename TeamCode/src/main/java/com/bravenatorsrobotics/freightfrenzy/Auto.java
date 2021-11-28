@@ -64,7 +64,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     }
 
 
-    // Warehouse Code (compatible for both sides with the 'movementModifier')
+    // Warehouse Code
     private void RunWarehouse() {
        robot.drive.DriveByInches(0.5, -27);
     }
@@ -357,12 +357,12 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         // Lift the lift
         if(driveDistance < 950) {
             // Position 1
-            telemetry.log().add("Lift Position: 1");
-            liftController.GoToStage(LiftController.LiftStage.STAGE_1);
+            telemetry.log().add("Lift Position: 3");
+            liftController.GoToStage(LiftController.LiftStage.STAGE_3);
         } else if(driveDistance > 1450) {
             // Position 3
-            liftController.GoToStage(LiftController.LiftStage.STAGE_3);
-            telemetry.log().add("Lift Position: 3");
+            liftController.GoToStage(LiftController.LiftStage.STAGE_1);
+            telemetry.log().add("Lift Position: 1");
         } else {
             liftController.GoToStage(LiftController.LiftStage.STAGE_2);
             telemetry.log().add("Lift Position: 2");
@@ -370,7 +370,6 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         }
 
 
-        // TODO: Lift the lift
         sleep(SLEEP_AMOUNT_MILLIS);
 
         final double shippingHubDriveDistance = 3.75;
