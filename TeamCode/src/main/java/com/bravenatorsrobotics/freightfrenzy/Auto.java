@@ -7,6 +7,7 @@ import com.bravenatorsrobotics.freightfrenzy.subsystem.IMUController;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -102,9 +103,11 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         // Drive to the turn table
 
         // Drive off the wall
-        robot.drive.DriveByInches(0.25, 5);
+        robot.drive.DriveByInches(0.25, 10);
 
         sleep(SLEEP_AMOUNT_MILLIS);
+
+        robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
         // TODO: Use Encoders
         // Strafe to the turn-table
@@ -122,18 +125,21 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn Towards Turn-Table
-        // TODO: Reverse
-        robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
-        sleep(SLEEP_AMOUNT_MILLIS);
+//        // TODO: Reverse
+//        robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+//        sleep(SLEEP_AMOUNT_MILLIS);
 
         // Strafe into turn-table
-        robot.drive.Drive(0, 0.05, 0);
-        timer.reset();
-        while(timer.seconds() < 0.01) { // Strafe Seconds
-            if(!opModeIsActive()) break;
+        Strafe(0.10, 0.025);
+        // Hold Robot
+        for(DcMotorEx motor : robot.GetDriveMotors()) {
+            motor.setTargetPosition(motor.getCurrentPosition());
         }
-        robot.drive.Stop();
-        robot.drive.Drive(0, 0, 0);
+        robot.SetRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        for(DcMotorEx motor : robot.GetDriveMotors()) {
+            motor.setPower(1);
+        }
+
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Spin the turn-table
@@ -148,7 +154,13 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         turnTableSpinner.setPower(0);
 
+        // Unlock wheels
+        robot.SetRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         sleep(SLEEP_AMOUNT_MILLIS);
+
+        // Drive Forward
+        robot.drive.DriveByInches(0.25, 6);
 
         // Strafe away from turn-table
         timer.reset();
@@ -177,7 +189,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         robot.drive.Drive(0, -0.25, 0);
 
-        while(timer.seconds() < 1.05) { // Strafe Seconds
+        while(timer.seconds() < 0.65) { // Strafe Seconds
             if(!opModeIsActive()) break;
         }
 
@@ -212,7 +224,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        int degreesTowardsShippingHub = 45;
+        int degreesTowardsShippingHub = 50;
         boolean isHeight3 = false;
 
         if(driveDifference < 550) {
@@ -251,14 +263,16 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(600);
         liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
         sleep(500);
+
+
+        // Back up away from goal
+        robot.drive.DriveByInches(0.50, 13.5);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
         liftController.ZeroLift();
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // Back up away from goal
-        robot.drive.DriveByInches(0.50, 12.5);
-        sleep(SLEEP_AMOUNT_MILLIS);
-
-        robot.drive.TurnDegrees(0.25, degreesTowardsShippingHub, AbstractDrive.TurnDirection.CLOCKWISE); // Turn to shipping hub
+        robot.drive.TurnDegrees(0.25, degreesTowardsShippingHub, AbstractDrive.TurnDirection.CLOCKWISE); // Turn away from shipping hub
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -272,7 +286,9 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.DriveByInches(0.5, -85);
+        robot.drive.DriveByEncoders(0.5, distanceToShippingHub);
+
+        Strafe(-0.25, 1.75);
     }
 
     private void RunBlueStorageUnit() {
@@ -297,7 +313,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         // Strafe away from turn-table
         sleep(SLEEP_AMOUNT_MILLIS);
-        Strafe(-0.25, 0.65);
+        Strafe(-0.25, 0.70);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Straighten out into wall
@@ -305,7 +321,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final int distanceToShippingHub = 200000; // TODO: Enter the right amount
+        final int distanceToShippingHub = 1700; // TODO: Enter the right amount
         final int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
 
         sleep(SLEEP_AMOUNT_MILLIS);
@@ -313,38 +329,58 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         // Drive past the blocks
         robot.drive.Drive(0.25, 0, 0);
 
+        int driveDistance = 0;
+
         while(opModeIsActive()) {
-            if(sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85 || (robot.GetDriveMotors()[0].getCurrentPosition() - startTicks) >= distanceToShippingHub) {
-                // FIXME: Doesn't Calculate the Encoder Value Correctly???
-                telemetry.addData("Distance", robot.GetDriveMotors()[0].getCurrentPosition() - startTicks);
+            int currentPosition = robot.GetDriveMotors()[0].getCurrentPosition();
+            int distance = currentPosition - startTicks;
+
+            telemetry.addData("Current Distance", distance);
+            telemetry.update();
+
+            if(sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85 || distance >= distanceToShippingHub) {
+                telemetry.addData("Distance", distance);
                 telemetry.update();
-                robot.Stop();
-//                break;
+                robot.drive.Stop();
+                driveDistance = distance;
+                break;
             }
         }
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final int distanceToDrive = distanceToShippingHub - (robot.GetDriveMotors()[0].getCurrentPosition() - startTicks);
+        final int distanceToDrive = distanceToShippingHub - driveDistance;
 
         // Drive to the shipping hub
-        robot.drive.DriveByEncoders(0.25, distanceToShippingHub);
+        robot.drive.DriveByEncoders(0.25, distanceToDrive);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn to the goal
-        robot.drive.TurnDegrees(0.25, 45, AbstractDrive.TurnDirection.CLOCKWISE);
+        robot.drive.TurnDegrees(0.25, 145, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
-        // Temporary Break
-        if(true)
-            return;
+        // Lift the lift
+        if(driveDistance < 950) {
+            // Position 1
+            telemetry.log().add("Lift Position: 1");
+            liftController.GoToStage(LiftController.LiftStage.STAGE_1);
+        } else if(driveDistance > 1450) {
+            // Position 3
+            liftController.GoToStage(LiftController.LiftStage.STAGE_3);
+            telemetry.log().add("Lift Position: 3");
+        } else {
+            liftController.GoToStage(LiftController.LiftStage.STAGE_2);
+            telemetry.log().add("Lift Position: 2");
+            // Position 2
+        }
+
 
         // TODO: Lift the lift
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final double shippingHubDriveDistance = 3.0;
+        final double shippingHubDriveDistance = 3.75;
 
         // Drive into the shipping hub
-        robot.drive.DriveByInches(0.25, shippingHubDriveDistance);
+        robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Dump the cup
@@ -352,22 +388,22 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(600);
         liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
         sleep(500);
+
+        // Back up away from shipping hub
+        robot.drive.DriveByInches(0.25, shippingHubDriveDistance + 1.50);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
         liftController.ZeroLift();
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // Back up away from shipping hub
-        robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);
-        sleep(SLEEP_AMOUNT_MILLIS);
-
         // Turn back
-        robot.drive.TurnDegrees(0.25, 45, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+        robot.drive.TurnDegrees(0.25, 145, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Drive back to wall
-        final int distanceToWall = robot.GetDriveMotors()[0].getCurrentPosition() - startTicks;
-        robot.drive.DriveByEncoders(0.25, -distanceToWall);
+        robot.drive.DriveByEncoders(0.50, -distanceToShippingHub);
 
         // Strafe into the shipping hub tape
-        Strafe(-0.25, 0.75);
+        Strafe(-0.25, 1.25);
 
     }
 

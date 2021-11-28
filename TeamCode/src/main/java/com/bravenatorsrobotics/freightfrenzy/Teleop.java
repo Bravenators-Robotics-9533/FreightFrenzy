@@ -38,6 +38,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     private boolean shouldReverse = false;
 
     private boolean shouldZeroLiftEncoder = false;
+    private boolean shouldJuiceTheIntake = false;
 
     // TODO: Reimplement
 //    private final PowerScale drivePowerScale = new PowerScale(this, 1.0 / 0.25);
@@ -170,6 +171,13 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
                 break;
 
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if(pressed) {
+                    shouldJuiceTheIntake = !shouldJuiceTheIntake;
+                }
+
+                break;
+
             // Turntable Spinner
             case FtcGamePad.GAMEPAD_X:
 
@@ -184,7 +192,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Intake
             case FtcGamePad.GAMEPAD_A:
                 if(pressed) {
-                    intake.setPower(INTAKE_SPEED);
+                    intake.setPower(shouldJuiceTheIntake ? 1 : INTAKE_SPEED);
                 } else {
                     intake.setPower(0);
                 }
@@ -195,7 +203,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             case FtcGamePad.GAMEPAD_Y:
 
                 if(pressed) {
-                    intake.setPower(-INTAKE_SPEED);
+                    intake.setPower(shouldJuiceTheIntake ? -1 : -INTAKE_SPEED);
                 } else {
                     intake.setPower(0);
                 }
