@@ -66,7 +66,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
     // Warehouse Code
     private void RunWarehouse() {
-       robot.drive.DriveByInches(0.5, -27);
+       robot.drive.DriveByInches(0.5, -37);
     }
 
     private void Strafe(double power, double time) {
@@ -185,7 +185,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         robot.drive.Drive(0, -0.25, 0);
 
-        while(timer.seconds() < 0.65) { // Strafe Seconds
+        while(timer.seconds() < 0.50) { // Strafe Seconds
             if(!opModeIsActive()) break;
         }
 
@@ -245,7 +245,9 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.DriveByInches(0.15, !isHeight3 ? -4.75 : -5.20); // Drive to shipping hub
+        double shippingHubDriveDist = -5.0 - 12.0;
+
+        robot.drive.DriveByInches(0.15, shippingHubDriveDist); // Drive to shipping hub
 
         timer.reset();
 
@@ -262,7 +264,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
 
         // Back up away from goal
-        robot.drive.DriveByInches(0.50, 13.5);
+        robot.drive.DriveByInches(0.50, (13.5 - 4.75) + -shippingHubDriveDist);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         liftController.ZeroLift();
@@ -352,12 +354,12 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn to the goal
-        robot.drive.TurnDegrees(0.25, 145, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+        robot.drive.TurnDegrees(0.25, 135, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
         // Lift the lift
         if(driveDistance < 950) {
             // Position 1
-            telemetry.log().add("Lift Position: 3");
+            telemetry.log().add("Lift cd ~/Position: 3");
             liftController.GoToStage(LiftController.LiftStage.STAGE_3);
         } else if(driveDistance > 1450) {
             // Position 3
@@ -372,7 +374,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final double shippingHubDriveDistance = 3.75;
+        final double shippingHubDriveDistance = 11.0;
 
         // Drive into the shipping hub
         robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);
@@ -392,13 +394,13 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn back
-        robot.drive.TurnDegrees(0.25, 145, AbstractDrive.TurnDirection.CLOCKWISE);
+        robot.drive.TurnDegrees(0.25, 135, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Drive back to wall
         robot.drive.DriveByEncoders(0.50, -distanceToShippingHub);
 
         // Strafe into the shipping hub tape
-        Strafe(-0.25, 1.25);
+        Strafe(-0.25, 1.40);
 
     }
 
