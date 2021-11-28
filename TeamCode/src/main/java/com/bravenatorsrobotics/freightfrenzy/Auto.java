@@ -66,11 +66,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
     // Warehouse Code (compatible for both sides with the 'movementModifier')
     private void RunWarehouse() {
-        // Drive to the alliance shipping hub
-
-        // Deliver the preloaded block (make sure the robot has this)
-
-        // Strafe and park fully in the warehouse
+       robot.drive.DriveByInches(0.5, -27);
     }
 
     private void Strafe(double power, double time) {
