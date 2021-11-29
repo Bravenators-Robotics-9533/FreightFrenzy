@@ -57,9 +57,9 @@ public class FourWheelDrive extends AbstractDrive {
         };
     }
 
-    private void LoopUntilNotBusy() {
-        while(true) {
-            if (!robot.opMode.opModeIsActive() || (!frontLeft.isBusy() &&
+    protected void LoopUntilNotBusy() {
+        while(robot.opMode.opModeIsActive()) {
+            if ((!frontLeft.isBusy() &&
                     !backLeft.isBusy() &&
                     !backRight.isBusy() &&
                     !backLeft.isBusy())) break;

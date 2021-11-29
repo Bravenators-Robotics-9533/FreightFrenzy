@@ -1,6 +1,8 @@
 package com.bravenatorsrobotics.common.drive;
 
 import com.bravenatorsrobotics.common.core.Robot;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class MecanumDrive extends FourWheelDrive {
 
@@ -44,5 +46,20 @@ public class MecanumDrive extends FourWheelDrive {
         SetPower(this.frontRight, frontRight);
         SetPower(this.backLeft, backLeft);
         SetPower(this.backRight, backRight);
+    }
+
+    public void Strafe(double inches) {
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + (int) (ticksPerInch * inches));
+        backLeft.setTargetPosition(frontLeft.getCurrentPosition() - (int) (ticksPerInch * inches));
+
+        frontRight.setTargetPosition(frontLeft.getCurrentPosition() - (int) (ticksPerInch * inches));
+        backRight.setTargetPosition(frontLeft.getCurrentPosition() + (int) (ticksPerInch * inches));
+
+        robot.SetRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SetAllPower(0.25);
+
+        LoopUntilNotBusy();
+
+        robot.SetRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
