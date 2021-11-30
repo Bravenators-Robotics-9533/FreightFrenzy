@@ -39,8 +39,6 @@ public abstract class OperationMode<T extends AbstractDrive> extends LinearOpMod
         // Make sure the robot specifications are set-up correctly.
         RunFrameworkChecks();
 
-        // TODO: Salvage the robot class
-//        if(OperationMode.robot == null)
         this.robot = new Robot<>(this, specifications);
     }
 }

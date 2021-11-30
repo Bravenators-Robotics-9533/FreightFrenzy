@@ -3,8 +3,13 @@ package com.bravenatorsrobotics.common.operation;
 import com.bravenatorsrobotics.common.core.FtcGamePad;
 import com.bravenatorsrobotics.common.core.RobotSpecifications;
 import com.bravenatorsrobotics.common.drive.AbstractDrive;
+import com.qualcomm.hardware.lynx.LynxModule;
+
+import java.util.List;
 
 public abstract class TeleopMode<T extends AbstractDrive> extends OperationMode<T> {
+
+    private List<LynxModule> lynxModules;
 
     protected final FtcGamePad driverGamePad;
     protected final FtcGamePad operatorGamePad;
@@ -37,6 +42,11 @@ public abstract class TeleopMode<T extends AbstractDrive> extends OperationMode<
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
+        lynxModules = hardwareMap.getAll(LynxModule.class);
+
+        // Set all expansion hubs to bulk update mode
+        for(LynxModule module : lynxModules) { module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL); }
+
         driverGamePad.initialize("Driver GamePad", gamepad1, this::OnDriverGamePadChange);
         operatorGamePad.initialize("Operator GamePad", gamepad2, this::OnOperatorGamePadChange);
 
@@ -55,6 +65,11 @@ public abstract class TeleopMode<T extends AbstractDrive> extends OperationMode<
         while(opModeIsActive()) {
             deltaTime = (endTime - startTime) / 1000000000.0; // Convert to accurate millis
             startTime = System.nanoTime();
+
+            // Clear the cache
+            for(LynxModule module : lynxModules) {
+                module.clearBulkCache();
+            }
 
             // Update
             driverGamePad.update();
