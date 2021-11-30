@@ -48,15 +48,15 @@ public class MecanumDrive extends FourWheelDrive {
         SetPower(this.backRight, backRight);
     }
 
-    public void Strafe(double inches) {
+    public void Strafe(double power, double inches) {
         frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + (int) (ticksPerInch * inches));
-        backLeft.setTargetPosition(frontLeft.getCurrentPosition() - (int) (ticksPerInch * inches));
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - (int) (ticksPerInch * inches));
 
-        frontRight.setTargetPosition(frontLeft.getCurrentPosition() - (int) (ticksPerInch * inches));
-        backRight.setTargetPosition(frontLeft.getCurrentPosition() + (int) (ticksPerInch * inches));
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() - (int) (ticksPerInch * inches));
+        backRight.setTargetPosition(backRight.getCurrentPosition() + (int) (ticksPerInch * inches));
 
         robot.SetRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SetAllPower(0.25);
+        SetAllPower(power);
 
         LoopUntilNotBusy();
 

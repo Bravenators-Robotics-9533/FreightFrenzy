@@ -96,197 +96,119 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     private void RunRedStorageUnit() {
         final double startAngle = imuController.GetZAxis();
 
-        // Drive to the turn table
+        robot.drive.Strafe(0.25, 14.0);
 
-        // Drive off the wall
+        sleep(SLEEP_AMOUNT_MILLIS);
+
         robot.drive.DriveByInches(0.25, 10);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
-
-        // TODO: Use Encoders
-        // Strafe to the turn-table
-        ElapsedTime timer = new ElapsedTime();
-        timer.reset();
-
-        robot.drive.Drive(0, 0.25, 0);
-
-        while(timer.seconds() < 1.75) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-
-        robot.drive.Stop();
+        robot.drive.TurnDegrees(0.25, 45, AbstractDrive.TurnDirection.CLOCKWISE);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // Turn Towards Turn-Table
-//        // TODO: Reverse
-//        robot.drive.TurnDegrees(0.25, 15, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
-//        sleep(SLEEP_AMOUNT_MILLIS);
-
-        // Strafe into turn-table
-        Strafe(0.10, 0.025);
-        // Hold Robot
-        for(DcMotorEx motor : robot.GetDriveMotors()) {
-            motor.setTargetPosition(motor.getCurrentPosition());
-        }
-        robot.SetRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        for(DcMotorEx motor : robot.GetDriveMotors()) {
-            motor.setPower(1);
-        }
+        robot.drive.Strafe(0.25, -10.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // Spin the turn-table
-        // TODO: Use the config
         turnTableSpinner.setPower(1);
-
-        timer.reset();
-
-        while(timer.seconds() < 2.5) { // Turn-Table
-            if(!opModeIsActive()) break;
-        }
-
+        sleep(2500);
         turnTableSpinner.setPower(0);
 
-        // Unlock wheels
-        robot.SetRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sleep(SLEEP_AMOUNT_MILLIS);
+
+        robot.drive.Strafe(0.25, 10.0);
+
+        // Calculate Turn Distance
+        final double turnDistance = imuController.GetZAxis() - startAngle;
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // Drive Forward
-        robot.drive.DriveByInches(0.25, 6);
-
-        // Strafe away from turn-table
-        timer.reset();
-
-        robot.drive.Drive(0, -0.25, 0);
-
-        while(timer.seconds() < 0.50) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-
-        robot.drive.Stop();
+        robot.drive.TurnDegrees(0.25, (int) turnDistance, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final double imuCorrection = imuController.GetZAxis() - startAngle;
-
-        robot.drive.TurnDegrees(0.25, (int) Math.abs(imuCorrection) + 5, // 5 degree correction
-                imuCorrection > 0 ? AbstractDrive.TurnDirection.CLOCKWISE : AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
-
-        robot.drive.TurnDegrees(0.45, 90, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+        robot.drive.Strafe(0.25, 3.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        // Strafe to the block
-        timer.reset();
+        // Calculate Drive Distance
+        final int startPosition = robot.GetDriveMotors()[0].getCurrentPosition();
+        final int driveDistanceEncoderTicks
+                = robot.drive.CalculateDriveByInches(-28.0, -28.0).frontLeftPosition;
 
-        robot.drive.Drive(0, -0.25, 0);
-
-        while(timer.seconds() < 0.50) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-
-        robot.drive.Stop();
+        int distanceDriven = 0;
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
         robot.drive.Drive(-0.10, 0, 0);
 
-        final int distanceToShippingHub = 1150;
-        final int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
-
         while(opModeIsActive()) {
-            double distance = sideDistanceSensor.getDistance(DistanceUnit.MM);
+            int currentMotorPosition = robot.GetDriveMotors()[0].getCurrentPosition();
+            final int distanceToDrive = Math.abs(startPosition + driveDistanceEncoderTicks) - Math.abs(currentMotorPosition);
 
-            telemetry.addData("Distance Sensor", distance);
+            if(sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85 ||
+                    currentMotorPosition <= startPosition + driveDistanceEncoderTicks) {
+                robot.drive.Stop();
+
+
+                robot.drive.DriveByEncoders(0.25, distanceToDrive);
+                distanceDriven = currentMotorPosition;
+
+                break;
+            }
+
+            telemetry.addData("Current Motor Position", currentMotorPosition);
+            telemetry.addData("Delta Position", currentMotorPosition - startPosition);
+            telemetry.addData("Start Position", startPosition);
+            telemetry.addData("End Distance", driveDistanceEncoderTicks);
             telemetry.update();
-
-            if(distance < 59.85 || Math.abs(robot.GetDriveMotors()[0].getCurrentPosition() - startTicks) >= distanceToShippingHub)
-                break;
         }
 
-        robot.drive.Stop();
+        // Drive to alliance shipping hub
 
-        sleep(SLEEP_AMOUNT_MILLIS);
+        // Turn towards shipping hub
+        int degreesToShippingHub = 55;
+        robot.drive.TurnDegrees(0.25, degreesToShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
-        final int driveDifference = Math.abs(robot.GetDriveMotors()[0].getCurrentPosition() - startTicks);
-
-        final int distanceToDrive = distanceToShippingHub - driveDifference;
-
-        robot.drive.DriveByEncoders(0.25, -distanceToDrive); // Negate
-
-        sleep(SLEEP_AMOUNT_MILLIS);
-
-        int degreesTowardsShippingHub = 50;
-        boolean isHeight3 = false;
-
-        if(driveDifference < 550) {
-            // Position 1
-            telemetry.log().add("Position 1");
+        // Lift the lift
+        if(distanceDriven > 875) {
+            // Lift Stage 1
             liftController.GoToStage(LiftController.LiftStage.STAGE_1);
-        } else if(driveDifference > 800) {
-            // Position 3
-            telemetry.log().add("Position 3");
+        } else if(distanceDriven < 495) {
+            // Lift Height 3
             liftController.GoToStage(LiftController.LiftStage.STAGE_3);
-            isHeight3 = true;
         } else {
-            // Position 2
-            telemetry.log().add("Position 2");
+            // Lift Height 2
             liftController.GoToStage(LiftController.LiftStage.STAGE_2);
-            degreesTowardsShippingHub -= 5;
         }
 
-        sleep(SLEEP_AMOUNT_MILLIS);
+        robot.drive.DriveByInches(0.30, -9.85);
 
-        robot.drive.TurnDegrees(0.50, degreesTowardsShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE); // Turn to shipping hub
-
-        sleep(SLEEP_AMOUNT_MILLIS);
-
-        double shippingHubDriveDist = -5.0 - 12.0;
-
-        robot.drive.DriveByInches(0.15, shippingHubDriveDist); // Drive to shipping hub
-
-        timer.reset();
-
-        while(liftController.GetLiftMotor().isBusy() && timer.seconds() < 1.25) {
-            if(!opModeIsActive())
-                break;
-        }
-
-        // Drop the Block
+        // Dump the cup
         liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
         sleep(600);
         liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
         sleep(500);
 
-
-        // Back up away from goal
-        robot.drive.DriveByInches(0.50, (13.5 - 4.75) + -shippingHubDriveDist);
+        // Back up away from shipping hub
+        robot.drive.DriveByInches(0.50, 11.25 + 1.50);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         liftController.ZeroLift();
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.TurnDegrees(0.25, degreesTowardsShippingHub, AbstractDrive.TurnDirection.CLOCKWISE); // Turn away from shipping hub
+        robot.drive.TurnDegrees(0.50, degreesToShippingHub, AbstractDrive.TurnDirection.CLOCKWISE);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.Drive(0, 0.25, 0);
-
-        while(timer.seconds() < 0.94) { // Strafe Seconds
-            if(!opModeIsActive()) break;
-        }
-
-        robot.drive.Stop();
+        robot.drive.DriveByInches(0.5, 32);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.DriveByEncoders(0.5, distanceToShippingHub);
+        robot.drive.Strafe(0.50, 14.25);
 
-        Strafe(-0.25, 1.75);
     }
 
     private void RunBlueStorageUnit() {
