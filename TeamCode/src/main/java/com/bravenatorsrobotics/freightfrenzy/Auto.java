@@ -7,7 +7,6 @@ import com.bravenatorsrobotics.freightfrenzy.subsystem.IMUController;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -96,7 +95,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     private void RunRedStorageUnit() {
         final double startAngle = imuController.GetZAxis();
 
-        robot.drive.Strafe(0.25, 14.0);
+        robot.drive.StrafeInches(0.25, 14.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -108,7 +107,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.Strafe(0.25, -10.0);
+        robot.drive.StrafeInches(0.25, -10.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -118,7 +117,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.Strafe(0.25, 10.0);
+        robot.drive.StrafeInches(0.25, 10.0);
 
         // Calculate Turn Distance
         final double turnDistance = imuController.GetZAxis() - startAngle;
@@ -129,7 +128,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.Strafe(0.25, 3.0);
+        robot.drive.StrafeInches(0.25, 3.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -207,7 +206,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.Strafe(0.50, 14.25);
+        robot.drive.StrafeInches(0.50, 14.25);
 
     }
 

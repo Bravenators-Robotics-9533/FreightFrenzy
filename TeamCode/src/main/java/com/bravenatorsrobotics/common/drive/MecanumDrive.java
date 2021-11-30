@@ -48,7 +48,7 @@ public class MecanumDrive extends FourWheelDrive {
         SetPower(this.backRight, backRight);
     }
 
-    public void Strafe(double power, double inches) {
+    public void StrafeInches(double power, double inches) {
         frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + (int) (ticksPerInch * inches));
         backLeft.setTargetPosition(backLeft.getCurrentPosition() - (int) (ticksPerInch * inches));
 
