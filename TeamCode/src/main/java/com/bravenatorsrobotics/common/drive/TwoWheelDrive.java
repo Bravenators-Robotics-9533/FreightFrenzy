@@ -50,7 +50,7 @@ public class TwoWheelDrive extends AbstractDrive {
     }
 
     @Override
-    public void DriveByEncoders(double power, int leftTicks, int rightTicks) {
+    public void DriveInches(double power, int leftTicks, int rightTicks) {
         // Increment Target Positions
         IncrementTargetPosition(left, leftTicks);
         IncrementTargetPosition(right, rightTicks);
@@ -66,8 +66,8 @@ public class TwoWheelDrive extends AbstractDrive {
     }
 
     @Override
-    public void DriveByInches(double power, double leftInches, double rightInches) {
-        DriveByEncoders(power, (int) (leftInches * ticksPerInch), (int) (rightInches * ticksPerInch));
+    public void DriveInches(double power, double leftInches, double rightInches) {
+        DriveInches(power, (int) (leftInches * ticksPerInch), (int) (rightInches * ticksPerInch));
     }
 
     @Override
@@ -80,6 +80,6 @@ public class TwoWheelDrive extends AbstractDrive {
             distance = -distance;
 
         // Drive the sides in different direction of the specified distance
-        this.DriveByInches(power, -distance, distance);
+        this.DriveInches(power, -distance, distance);
     }
 }
