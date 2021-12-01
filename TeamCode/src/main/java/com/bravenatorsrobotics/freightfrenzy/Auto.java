@@ -240,7 +240,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final int distanceToShippingHub = 1700; // TODO: Enter the right amount
+        final int distanceToShippingHub = 1700;
         final int startTicks = robot.GetDriveMotors()[0].getCurrentPosition();
 
         sleep(SLEEP_AMOUNT_MILLIS);
