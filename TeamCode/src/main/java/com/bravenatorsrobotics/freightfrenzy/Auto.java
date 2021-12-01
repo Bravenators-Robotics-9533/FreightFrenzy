@@ -152,7 +152,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
                 robot.drive.Stop();
 
 
-                robot.drive.DriveByEncoders(0.25, distanceToDrive);
+                robot.drive.DriveInches(0.25, distanceToDrive);
                 distanceDriven = currentMotorPosition;
 
                 break;
@@ -271,7 +271,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         final int distanceToDrive = distanceToShippingHub - driveDistance;
 
         // Drive to the shipping hub
-        robot.drive.DriveByEncoders(0.25, distanceToDrive);
+        robot.drive.DriveInches(0.25, distanceToDrive);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn to the goal
@@ -318,7 +318,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         robot.drive.TurnDegrees(0.25, 135, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Drive back to wall
-        robot.drive.DriveByEncoders(0.50, -distanceToShippingHub);
+        robot.drive.DriveInches(0.50, -distanceToShippingHub);
 
         // Strafe into the shipping hub tape
         Strafe(-0.25, 1.40);

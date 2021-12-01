@@ -89,7 +89,7 @@ public class FourWheelDrive extends AbstractDrive {
     }
 
     @Override
-    public void DriveByEncoders(double power, int leftTicks, int rightTicks) {
+    public void DriveInches(double power, int leftTicks, int rightTicks) {
         // Increment Target Positions
         IncrementTargetPosition(frontLeft, leftTicks);
         IncrementTargetPosition(backLeft, leftTicks);
@@ -125,14 +125,14 @@ public class FourWheelDrive extends AbstractDrive {
     }
 
     @Override
-    public void DriveByInches(double power, double leftInches, double rightInches) {
+    public void DriveInches(double power, double leftInches, double rightInches) {
         DeltaMotorPosition calculatedPosition = CalculateDriveByInches(leftInches, rightInches);
-        DriveByEncoders(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
+        DriveInches(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
     }
 
     @Override
     public void TurnDegrees(double power, int degrees, TurnDirection turnDirection) {
         DeltaMotorPosition calculatedPosition = CalculateTurnDegrees(degrees, turnDirection);
-        DriveByEncoders(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
+        DriveInches(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
     }
 }

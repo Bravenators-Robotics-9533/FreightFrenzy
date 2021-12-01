@@ -50,11 +50,11 @@ public abstract class AbstractDrive {
     public abstract void Drive(double v, double h, double r);
     public abstract void Stop();
 
-    public abstract void DriveByEncoders(double power, int leftTicks, int rightTicks);
-    public void DriveByEncoders(double power, int ticks) { DriveByEncoders(power, ticks, ticks); } // Binding
+    public abstract void DriveInches(double power, int leftTicks, int rightTicks);
+    public void DriveInches(double power, int ticks) { DriveInches(power, ticks, ticks); } // Binding
 
-    public abstract void DriveByInches(double power, double leftInches, double rightInches);
-    public void DriveByInches(double power, double inches) { DriveByInches(power, inches, inches); }  // Binding
+    public abstract void DriveInches(double power, double leftInches, double rightInches);
+    public void DriveByInches(double power, double inches) { DriveInches(power, inches, inches); }  // Binding
 
     public abstract void TurnDegrees(double power, int degrees, TurnDirection turnDirection);
 }
