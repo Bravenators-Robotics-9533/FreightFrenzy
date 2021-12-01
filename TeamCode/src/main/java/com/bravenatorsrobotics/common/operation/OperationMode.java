@@ -41,4 +41,6 @@ public abstract class OperationMode<T extends AbstractDrive> extends LinearOpMod
 
         this.robot = new Robot<>(this, specifications);
     }
+
+    public Robot<T> GetRobot() { return this.robot; }
 }
