@@ -73,10 +73,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     @Override
     public void OnStart() {
         // Run the pre-selected sequence
-        boolean sequenceSucceeded = sequence.RunSequence();
-
-        telemetry.addData("Autonomous Succeeded", sequenceSucceeded);
-        telemetry.update();
+        sequence.RunSequence();
     }
 
     @Override

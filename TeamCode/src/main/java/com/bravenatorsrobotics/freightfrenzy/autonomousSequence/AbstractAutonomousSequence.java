@@ -21,7 +21,7 @@ public abstract class AbstractAutonomousSequence {
         this.telemetry = auto.telemetry;
     }
 
-    public abstract boolean RunSequence();
+    public abstract void RunSequence();
 
     public void sleep(int millis) {
         ElapsedTime timer = new ElapsedTime();

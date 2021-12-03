@@ -9,7 +9,6 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
     }
 
     @Override
-    public boolean RunSequence() {
-        return false;
+    public void RunSequence() {
     }
 }

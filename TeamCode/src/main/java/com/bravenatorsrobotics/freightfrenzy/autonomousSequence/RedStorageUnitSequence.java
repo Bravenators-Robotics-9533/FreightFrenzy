@@ -13,7 +13,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
     }
 
     @Override
-    public boolean RunSequence() {
+    public void RunSequence() {
 
         final double startAngle = auto.imuController.GetZAxis();
 
@@ -129,7 +129,5 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         robot.drive.StrafeInches(0.50, 14.25);
-
-        return true; // Passes
     }
 }
