@@ -71,11 +71,13 @@ public class LiftController extends AbstractController {
 
         if(!liftTouchSensor.isPressed())
             liftMotor.setPower(-LIFT_POWER / 2.0);
+        else
+            return;
 
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
 
-        while(!liftTouchSensor.isPressed() && timer.seconds() <= 1.5) { // Make sure if it gets stuck we don't get shook.
+        while(!liftTouchSensor.isPressed() && timer.seconds() <= 1.5) { // Time out after 1.5 seconds in case lift gets stuck
             if(!operationMode.opModeIsActive()) break;
         }
 
