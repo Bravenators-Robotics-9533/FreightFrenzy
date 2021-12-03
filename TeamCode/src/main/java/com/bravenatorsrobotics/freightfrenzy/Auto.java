@@ -2,11 +2,11 @@ package com.bravenatorsrobotics.freightfrenzy;
 
 import com.bravenatorsrobotics.common.drive.MecanumDrive;
 import com.bravenatorsrobotics.common.operation.AutonomousMode;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.AbstractAutonomousSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.BlueStorageUnitSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.BlueWarehouseSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.RedStorageUnitSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.RedWarehouseSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomousSequence.AbstractAutonomousSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomousSequence.BlueStorageUnitSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomousSequence.BlueWarehouseSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomousSequence.RedStorageUnitSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomousSequence.RedWarehouseSequence;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.IMUController;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;

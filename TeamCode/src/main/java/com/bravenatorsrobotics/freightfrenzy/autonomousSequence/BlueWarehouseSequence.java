@@ -1,4 +1,4 @@
-package com.bravenatorsrobotics.freightfrenzy.autonomous;
+package com.bravenatorsrobotics.freightfrenzy.autonomousSequence;
 
 import com.bravenatorsrobotics.freightfrenzy.Auto;
 

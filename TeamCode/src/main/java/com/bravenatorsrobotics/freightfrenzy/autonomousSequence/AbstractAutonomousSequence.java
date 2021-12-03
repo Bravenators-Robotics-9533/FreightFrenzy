@@ -1,9 +1,8 @@
-package com.bravenatorsrobotics.freightfrenzy.autonomous;
+package com.bravenatorsrobotics.freightfrenzy.autonomousSequence;
 
 import com.bravenatorsrobotics.common.core.Robot;
 import com.bravenatorsrobotics.common.drive.MecanumDrive;
 import com.bravenatorsrobotics.freightfrenzy.Auto;
-import com.bravenatorsrobotics.freightfrenzy.Teleop;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
