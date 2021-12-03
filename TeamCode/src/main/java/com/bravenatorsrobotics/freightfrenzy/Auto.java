@@ -1,20 +1,17 @@
 package com.bravenatorsrobotics.freightfrenzy;
 
-import com.bravenatorsrobotics.common.drive.AbstractDrive;
 import com.bravenatorsrobotics.common.drive.MecanumDrive;
 import com.bravenatorsrobotics.common.operation.AutonomousMode;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.AbstractAutonomousSequence;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.BlueStorageUnitSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomous.BlueWarehouseSequence;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.RedStorageUnitSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.WarehouseSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomous.RedWarehouseSequence;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.IMUController;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Autonomous")
 public class Auto extends AutonomousMode<MecanumDrive> {
@@ -53,13 +50,22 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         // Create the appropriate sequence
         switch (config.startingPosition) {
             case WAREHOUSE:
-                sequence = new WarehouseSequence(this);
+                if(config.allianceColor == Config.AllianceColor.RED) {
+                    // Red Warehouse
+                    sequence = new RedWarehouseSequence(this);
+                } else {
+                    // Blue Warehouse
+                    sequence = new BlueWarehouseSequence(this);
+                }
                 break;
             case STORAGE_UNIT:
-                if(config.allianceColor == Config.AllianceColor.RED)
+                if(config.allianceColor == Config.AllianceColor.RED) {
+                    // Red Storage Unit
                     sequence = new RedStorageUnitSequence(this);
-                else
+                } else {
+                    // Blue Storage Unit
                     sequence = new BlueStorageUnitSequence(this);
+                }
                 break;
         }
     }
