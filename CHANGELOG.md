@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-    No New Features
+No New Features
 
 ### Bug Fixes
 
