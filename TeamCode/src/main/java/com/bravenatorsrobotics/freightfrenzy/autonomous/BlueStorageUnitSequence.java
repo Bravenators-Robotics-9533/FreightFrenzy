@@ -36,7 +36,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         // Strafe away from turn-table
         sleep(SLEEP_AMOUNT_MILLIS);
-        StrafeSeconds(-0.25, 0.70);
+        StrafeSeconds(-0.25, 0.65);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Straighten out into wall
@@ -50,7 +50,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Drive past the blocks
-        robot.drive.Drive(0.25, 0, 0);
+        robot.drive.Drive(0.15, 0, 0);
 
         int driveDistance = 0;
 
@@ -61,7 +61,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
             telemetry.addData("Current Distance", distance);
             telemetry.update();
 
-            if(auto.sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85 || distance >= distanceToShippingHub) {
+            if(auto.sideDistanceSensor.getDistance(DistanceUnit.MM) < 58 || distance >= distanceToShippingHub) {
                 telemetry.addData("Distance", distance);
                 telemetry.update();
                 robot.drive.Stop();
@@ -79,12 +79,12 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn to the goal
-        robot.drive.TurnDegrees(0.25, 135, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+        robot.drive.TurnDegrees(0.25, 125, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
         // Lift the lift
-        if(driveDistance < 950) {
+        if(driveDistance < 930) {
             // Position 1
-            telemetry.log().add("Lift cd ~/Position: 3");
+            telemetry.log().add("Lift Position: 3");
             auto.liftController.GoToStage(LiftController.LiftStage.STAGE_3);
         } else if(driveDistance > 1450) {
             // Position 3
@@ -99,7 +99,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final double shippingHubDriveDistance = 11.0;
+        final double shippingHubDriveDistance = 9.50;
 
         // Drive into the shipping hub
         robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);
@@ -107,7 +107,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         // Dump the cup
         auto.liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
-        sleep(600);
+        sleep(1000);
         auto.liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
         sleep(500);
 
@@ -119,13 +119,13 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn back
-        robot.drive.TurnDegrees(0.25, 135, AbstractDrive.TurnDirection.CLOCKWISE);
+        robot.drive.TurnDegrees(0.25, 125, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Drive back to wall
         robot.drive.DriveInches(0.50, -distanceToShippingHub);
 
         // Strafe into the shipping hub tape
-        StrafeSeconds(-0.25, 1.40);
+        StrafeSeconds(-0.25, 1.25);
 
         return true; // Sequence Succeeded
     }
