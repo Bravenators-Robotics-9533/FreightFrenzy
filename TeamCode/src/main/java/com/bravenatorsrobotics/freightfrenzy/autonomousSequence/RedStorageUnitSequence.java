@@ -21,7 +21,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.DriveByInches(0.25, 10);
+        robot.drive.DriveInches(0.25, 10);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -74,7 +74,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
                 robot.drive.Stop();
 
 
-                robot.drive.DriveInches(0.25, distanceToDrive);
+                robot.drive.DriveEncoderTicks(0.25, distanceToDrive);
                 distanceDriven = currentMotorPosition;
 
                 break;
@@ -105,7 +105,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
             auto.liftController.GoToStage(LiftController.LiftStage.STAGE_2);
         }
 
-        robot.drive.DriveByInches(0.30, -9.85);
+        robot.drive.DriveInches(0.30, -9.85);
 
         // Dump the cup
         auto.liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
@@ -114,7 +114,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(500);
 
         // Back up away from shipping hub
-        robot.drive.DriveByInches(0.50, 11.25 + 1.50);
+        robot.drive.DriveInches(0.50, 11.25 + 1.50);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         auto.liftController.ZeroLift();
@@ -124,7 +124,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.DriveByInches(0.5, 32);
+        robot.drive.DriveInches(0.5, 32);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 

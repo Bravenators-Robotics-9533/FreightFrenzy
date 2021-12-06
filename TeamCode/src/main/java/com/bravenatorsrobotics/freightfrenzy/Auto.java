@@ -22,6 +22,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     public IMUController imuController;
 
     public DcMotorEx turnTableSpinner;
+    public DcMotorEx intakeMotor;
 
     public RevColorSensorV3 sideDistanceSensor;
 
@@ -39,6 +40,8 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         liftController = new LiftController(this);
 
         turnTableSpinner = robot.GetMotor("turnTable", false);
+        intakeMotor = robot.GetMotor("intake", true);
+
         sideDistanceSensor = hardwareMap.get(RevColorSensorV3.class, "sideDistanceSensor");
 
         liftController.SetCupPosition(LiftController.CupPosition.TILTED_POSITION);

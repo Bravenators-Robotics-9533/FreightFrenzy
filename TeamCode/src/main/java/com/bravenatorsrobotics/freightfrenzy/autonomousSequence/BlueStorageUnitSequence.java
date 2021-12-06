@@ -22,7 +22,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Drive To wall
-        robot.drive.DriveByInches(0.25, -20);
+        robot.drive.DriveInches(0.25, -20);
 
         // Strafe into duck spinner
         sleep(SLEEP_AMOUNT_MILLIS);
@@ -40,7 +40,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Straighten out into wall
-        robot.drive.DriveByInches(0.25, -4.0);
+        robot.drive.DriveInches(0.25, -4.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -75,7 +75,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         final int distanceToDrive = distanceToShippingHub - driveDistance;
 
         // Drive to the shipping hub
-        robot.drive.DriveInches(0.25, distanceToDrive);
+        robot.drive.DriveEncoderTicks(0.25, distanceToDrive);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Turn to the goal
@@ -102,7 +102,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         final double shippingHubDriveDistance = 11.0;
 
         // Drive into the shipping hub
-        robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);
+        robot.drive.DriveInches(0.25, -shippingHubDriveDistance);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Dump the cup
@@ -112,7 +112,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(500);
 
         // Back up away from shipping hub
-        robot.drive.DriveByInches(0.25, shippingHubDriveDistance + 1.50);
+        robot.drive.DriveInches(0.25, shippingHubDriveDistance + 1.50);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         auto.liftController.ZeroLift();
@@ -122,7 +122,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         robot.drive.TurnDegrees(0.25, 135, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Drive back to wall
-        robot.drive.DriveInches(0.50, -distanceToShippingHub);
+        robot.drive.DriveEncoderTicks(0.50, -distanceToShippingHub);
 
         // Strafe into the shipping hub tape
         StrafeSeconds(-0.25, 1.40);

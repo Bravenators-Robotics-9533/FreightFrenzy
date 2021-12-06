@@ -4,6 +4,7 @@ import com.bravenatorsrobotics.common.core.Robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
+import com.sun.source.tree.ModifiersTree;
 
 public class FourWheelDrive extends AbstractDrive {
 
@@ -12,21 +13,21 @@ public class FourWheelDrive extends AbstractDrive {
     protected final DcMotorEx backLeft;
     protected final DcMotorEx backRight;
 
-    public static class DeltaMotorPosition {
+    public static class MotorPosition {
 
         public final int frontLeftPosition;
         public final int frontRightPosition;
         public final int backLeftPosition;
         public final int backRightPosition;
 
-        public DeltaMotorPosition(int fl, int fr, int bl, int br) {
+        public MotorPosition(int fl, int fr, int bl, int br) {
             this.frontLeftPosition = fl;
             this.frontRightPosition = fr;
             this.backLeftPosition = bl;
             this.backRightPosition = br;
         }
 
-        public DeltaMotorPosition(int left, int right) {
+        public MotorPosition(int left, int right) {
             this.frontLeftPosition = left;
             this.backLeftPosition = left;
 
@@ -89,7 +90,7 @@ public class FourWheelDrive extends AbstractDrive {
     }
 
     @Override
-    public void DriveInches(double power, int leftTicks, int rightTicks) {
+    public void DriveEncoderTicks(double power, int leftTicks, int rightTicks) {
         // Increment Target Positions
         IncrementTargetPosition(frontLeft, leftTicks);
         IncrementTargetPosition(backLeft, leftTicks);
@@ -104,13 +105,39 @@ public class FourWheelDrive extends AbstractDrive {
         this.Stop();
 
         robot.SetRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-}
-
-    public DeltaMotorPosition CalculateDriveByInches(double leftInches, double rightInches) {
-        return new DeltaMotorPosition((int) (leftInches * ticksPerInch), (int) (rightInches * ticksPerInch));
     }
 
-    public DeltaMotorPosition CalculateTurnDegrees(int degrees, TurnDirection turnDirection) {
+    public void SetMotorPositions(MotorPosition motorPosition, double power) {
+        // Set target positions
+        frontLeft.setTargetPosition(motorPosition.frontLeftPosition);
+        frontRight.setTargetPosition(motorPosition.frontRightPosition);
+        backLeft.setTargetPosition(motorPosition.backLeftPosition);
+        backRight.setTargetPosition(motorPosition.backRightPosition);
+
+        // Set Motor Mode and Power
+        robot.SetRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SetAllPower(power);
+
+        // Stop the motors
+        this.Stop();
+
+        // Return Motor Mode
+        robot.SetRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public MotorPosition GetCurrentMotorPositions() {
+        return new MotorPosition(
+                frontLeft.getCurrentPosition(),
+                frontRight.getCurrentPosition(),
+                backLeft.getCurrentPosition(),
+                backRight.getCurrentPosition());
+    }
+
+    public MotorPosition CalculateDriveByInches(double leftInches, double rightInches) {
+        return new MotorPosition((int) (leftInches * ticksPerInch), (int) (rightInches * ticksPerInch));
+    }
+
+    public MotorPosition CalculateTurnDegrees(int degrees, TurnDirection turnDirection) {
         // Calculate the Distance in Inches
         double distance = Math.abs(degrees) * (pivotCircleCircumference / 360.0);
 
@@ -121,18 +148,18 @@ public class FourWheelDrive extends AbstractDrive {
         // Convert Inches to Encoder Ticks
         distance *= ticksPerInch;
 
-        return new DeltaMotorPosition((int) -distance, (int) distance);
+        return new MotorPosition((int) -distance, (int) distance);
     }
 
     @Override
     public void DriveInches(double power, double leftInches, double rightInches) {
-        DeltaMotorPosition calculatedPosition = CalculateDriveByInches(leftInches, rightInches);
-        DriveInches(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
+        MotorPosition calculatedPosition = CalculateDriveByInches(leftInches, rightInches);
+        DriveEncoderTicks(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
     }
 
     @Override
     public void TurnDegrees(double power, int degrees, TurnDirection turnDirection) {
-        DeltaMotorPosition calculatedPosition = CalculateTurnDegrees(degrees, turnDirection);
-        DriveInches(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
+        MotorPosition calculatedPosition = CalculateTurnDegrees(degrees, turnDirection);
+        DriveEncoderTicks(power, calculatedPosition.backLeftPosition, calculatedPosition.backRightPosition);
     }
 }

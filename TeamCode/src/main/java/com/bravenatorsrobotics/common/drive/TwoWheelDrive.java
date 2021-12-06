@@ -50,7 +50,7 @@ public class TwoWheelDrive extends AbstractDrive {
     }
 
     @Override
-    public void DriveInches(double power, int leftTicks, int rightTicks) {
+    public void DriveEncoderTicks(double power, int leftTicks, int rightTicks) {
         // Increment Target Positions
         IncrementTargetPosition(left, leftTicks);
         IncrementTargetPosition(right, rightTicks);
@@ -67,7 +67,7 @@ public class TwoWheelDrive extends AbstractDrive {
 
     @Override
     public void DriveInches(double power, double leftInches, double rightInches) {
-        DriveInches(power, (int) (leftInches * ticksPerInch), (int) (rightInches * ticksPerInch));
+        DriveEncoderTicks(power, (int) (leftInches * ticksPerInch), (int) (rightInches * ticksPerInch));
     }
 
     @Override
