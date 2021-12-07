@@ -20,8 +20,8 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         // Strafe into the warehouse
         robot.drive.StrafeInches(0.5, 12);
 
-        // Capture the robot's home position
-        FourWheelDrive.MotorPosition homePosition = robot.drive.GetCurrentMotorPositions();
+        // Capture the robot's warehouse position
+        FourWheelDrive.MotorPosition warehousePosition = robot.drive.GetCurrentMotorPositions();
 
         // Move off the wall
         robot.drive.DriveInches(0.5, 6);
@@ -35,7 +35,20 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         // Get the game material
         boolean robotContainsGameMaterial = GetGameMaterial();
 
-        // Return to the home position
+        // Return to the warehouse position
+        robot.drive.SetMotorPositions(warehousePosition, 0.5);
+
+        // Strafe back to starting position
+        robot.drive.StrafeInches(0.5, -12);
+
+        // Save the home position
+        FourWheelDrive.MotorPosition homePosition = robot.drive.GetCurrentMotorPositions();
+
+        // If the robot contains a block, deliver it
+        if(robotContainsGameMaterial)
+            DeliverBlockFromStartingPosition();
+
+        // Return to the home positions
         robot.drive.SetMotorPositions(homePosition, 0.5);
     }
 
@@ -79,5 +92,35 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         auto.intakeMotor.setPower(0);
 
         return isObjectInCup;
+    }
+
+    private void DeliverBlockFromStartingPosition() {
+        // Strafe to the alliance shipping hub
+        robot.drive.StrafeInches(0.5, -12);
+
+        // Move off the wall
+        robot.drive.DriveInches(0.5, 6);
+
+        // Spin the lift to the correction position
+        robot.drive.TurnDegrees(0.5, 180, AbstractDrive.TurnDirection.CLOCKWISE);
+
+        // Lift the lift to the top position
+        auto.liftController.GoToStage(LiftController.LiftStage.STAGE_3);
+
+        final double distanceToShippingHub = 8.0; // inches
+
+        // Drive to the alliance shipping hub
+        robot.drive.DriveInches(0.5, -distanceToShippingHub);
+
+        // Dump the cup
+        auto.liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
+        sleep(800);
+        auto.liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
+
+        // Drive away from the alliance shipping hub
+        robot.drive.DriveInches(0.5, distanceToShippingHub);
+
+        // Lower the lift
+        auto.liftController.ZeroLift();
     }
 }
