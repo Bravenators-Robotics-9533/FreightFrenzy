@@ -69,7 +69,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
             int currentMotorPosition = robot.GetDriveMotors()[0].getCurrentPosition();
             final int distanceToDrive = Math.abs(startPosition + driveDistanceEncoderTicks) - Math.abs(currentMotorPosition);
 
-            if(auto.sideDistanceSensor.getDistance(DistanceUnit.MM) < 59.85 ||
+            if(auto.sideDistanceSensor.getDistance(DistanceUnit.MM) < 58 ||
                     currentMotorPosition <= startPosition + driveDistanceEncoderTicks) {
                 robot.drive.Stop();
 
@@ -105,7 +105,10 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
             auto.liftController.GoToStage(LiftController.LiftStage.STAGE_2);
         }
 
-        robot.drive.DriveInches(0.30, -9.85);
+        final double distanceToDriveToShippingHub = -6.75;
+
+        // Drive to shipping hub
+        robot.drive.DriveByInches(0.30, distanceToDriveToShippingHub);
 
         // Dump the cup
         auto.liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
@@ -114,7 +117,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(500);
 
         // Back up away from shipping hub
-        robot.drive.DriveInches(0.50, 11.25 + 1.50);
+        robot.drive.DriveByInches(0.50, 21.0 + distanceToDriveToShippingHub);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         auto.liftController.ZeroLift();
@@ -128,6 +131,10 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.StrafeInches(0.50, 14.25);
+        double strafeDistance = 18;
+
+        robot.drive.StrafeInches(0.50, strafeDistance);
+
+        return true; // Passes
     }
 }

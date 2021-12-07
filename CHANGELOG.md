@@ -2,7 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## Southern League Holiday Meet (2021-11-28)
+### Williamstown Meet (2021-12-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* break apart autonomous into sequences
+* use bulk update manual mode to not read sesnsor data more than once per update loop
+* completely redesign the red shipping hub autonomous
+
+### Features
+
+No New Features
+
+### Bug Fixes
+
+* use bulk update manual mode to not read sesnsor data more than once per update loop ([cc2f959](https://github.com/Nick-Fanelli/FtcRobotController/commit/cc2f959f74b26506bdca6274535aa1809eda8e6e))
+
+---
+
+## Farmingdale Meet (2021-11-28)
 
 
 ### ⚠ BREAKING CHANGES
@@ -73,7 +92,5 @@ All notable changes to this project will be documented in this file. See [standa
 * turning calculation ([dfadfd0](https://github.com/Nick-Fanelli/FtcRobotController/commit/dfadfd00ddb6d786ed16f0a9ae8b783d29703401))
 * update to use velocity ([2067725](https://github.com/Nick-Fanelli/FtcRobotController/commit/20677250600e54947d95858aec80a3e3777c3c73))
 * use new updated wheel diameter math to calculate turning distance ([490d283](https://github.com/Nick-Fanelli/FtcRobotController/commit/490d28331e0e266978872d30fa9159fa855739a2))
-
-
 * migrate all team code to TEAM_IDENTIFIER.freightfrenzy and all common code to TEAM_IDENTIFIER.common ([a71e457](https://github.com/Nick-Fanelli/FtcRobotController/commit/a71e457d9543e7042670c94924d50da9c0b0b1b6))
 * refactor so drive system in operation mode is directly the one specified and not generic ([ff04230](https://github.com/Nick-Fanelli/FtcRobotController/commit/ff0423012d9357ace4cbcb91f864bb257b910518))
