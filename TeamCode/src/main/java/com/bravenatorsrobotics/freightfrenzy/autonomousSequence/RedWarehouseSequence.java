@@ -3,6 +3,7 @@ package com.bravenatorsrobotics.freightfrenzy.autonomousSequence;
 import com.bravenatorsrobotics.common.drive.AbstractDrive;
 import com.bravenatorsrobotics.common.drive.FourWheelDrive;
 import com.bravenatorsrobotics.freightfrenzy.Auto;
+import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -19,21 +20,30 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         // Strafe into the warehouse
         robot.drive.StrafeInches(0.5, 12);
 
+        // Capture the robot's home position
+        FourWheelDrive.MotorPosition homePosition = robot.drive.GetCurrentMotorPositions();
+
         // Move off the wall
         robot.drive.DriveInches(0.5, 6);
 
         // Turn towards the game material
         robot.drive.TurnDegrees(0.5, 90, AbstractDrive.TurnDirection.CLOCKWISE);
 
-        // Drive forward slowly until the game material is in the cup unless timeout is reached
+        // Drive to the game material
+        robot.drive.DriveInches(0.5, 6);
 
+        // Get the game material
+        boolean robotContainsGameMaterial = GetGameMaterial();
+
+        // Return to the home position
+        robot.drive.SetMotorPositions(homePosition, 0.5);
     }
 
-    // Returns if one is reached or not
+    // Returns if a game material is in the cup or not
     private boolean GetGameMaterial() {
 
-        // Save the current position of each motor
-        final FourWheelDrive.MotorPosition startingPositions = robot.drive.GetCurrentMotorPositions();
+        // Set the cup position to intake position
+        auto.liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
 
         // Turn on the intake
         auto.intakeMotor.setPower(0.5);
@@ -43,19 +53,31 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
 
+        boolean isObjectInCup = false;
+
         while(opModeIsActive()) {
 
-            // TODO: Detect Object In Cup
+            isObjectInCup = auto.liftController.IsObjectInCup();
 
-            if(timer.milliseconds() > 5000) {
-
+            if(timer.milliseconds() > 5000 || isObjectInCup) {
                 robot.drive.Stop(); // Stop the robot
-                auto.intakeMotor.setPower(0); // Stop the intake motors
-
+                auto.intakeMotor.setPower(-0.5); // Reverse the intake motor
+                break;
             }
 
         }
 
-        return true;
+        // If there's an object in the cup tilt it back
+        if(isObjectInCup) {
+            auto.liftController.SetCupPosition(LiftController.CupPosition.TILTED_POSITION);
+        }
+
+        // Wait to spit out any stuck game material
+        sleep(1500);
+
+        // Stop the intake
+        auto.intakeMotor.setPower(0);
+
+        return isObjectInCup;
     }
 }
