@@ -108,7 +108,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         final double distanceToDriveToShippingHub = -6.75;
 
         // Drive to shipping hub
-        robot.drive.DriveByInches(0.30, distanceToDriveToShippingHub);
+        robot.drive.DriveInches(0.30, distanceToDriveToShippingHub);
 
         // Dump the cup
         auto.liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
