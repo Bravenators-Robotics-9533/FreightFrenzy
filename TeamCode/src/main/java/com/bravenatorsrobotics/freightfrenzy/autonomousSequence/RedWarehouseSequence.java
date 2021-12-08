@@ -55,12 +55,17 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
     // Returns if a game material is in the cup or not
     private boolean GetGameMaterial() {
 
+        // Make sure the lift is zeroed
+        auto.liftController.ZeroLift();
+
         // Set the cup position to intake position
         auto.liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
 
         // Turn on the intake
         auto.intakeMotor.setPower(0.5);
-        robot.drive.Drive(0.075, 0, 0);
+
+        // Start moving the robot towards the game material
+        robot.drive.Drive(0.1, 0, 0);
 
         // Setup timer
         ElapsedTime timer = new ElapsedTime();
@@ -86,7 +91,7 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         }
 
         // Wait to spit out any stuck game material
-        sleep(1500);
+        sleep(750);
 
         // Stop the intake
         auto.intakeMotor.setPower(0);
