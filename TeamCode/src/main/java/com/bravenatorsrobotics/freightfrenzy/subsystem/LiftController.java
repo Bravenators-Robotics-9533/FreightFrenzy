@@ -1,13 +1,24 @@
 package com.bravenatorsrobotics.freightfrenzy.subsystem;
 
 import com.bravenatorsrobotics.common.operation.OperationMode;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class LiftController extends AbstractController {
+
+    private static final double CUP_OBJECT_THRESHOLD_CM = 6.0; // CM
+    public static final double LIFT_POWER = 0.50;
+
+    private final DcMotorEx liftMotor;
+    private final TouchSensor liftTouchSensor;
+    private final Servo cupServo;
+    private final RevColorSensorV3 cupDistanceSensor;
 
     public enum LiftStage {
         STAGE_1(45),
@@ -33,12 +44,6 @@ public class LiftController extends AbstractController {
         }
     }
 
-    public static final double LIFT_POWER = 0.50;
-
-    private final DcMotorEx liftMotor;
-    private final TouchSensor liftTouchSensor;
-    private final Servo cupServo;
-
     public LiftController(OperationMode<?> operationMode) {
         super(operationMode);
 
@@ -49,6 +54,8 @@ public class LiftController extends AbstractController {
         liftTouchSensor = operationMode.hardwareMap.touchSensor.get("liftTouchSensor");
 
         cupServo = operationMode.hardwareMap.servo.get("cupServo");
+
+        cupDistanceSensor = operationMode.hardwareMap.get(RevColorSensorV3.class, "cupDistanceSensor");
     }
 
     public void RunToPosition(int position) {
@@ -91,6 +98,11 @@ public class LiftController extends AbstractController {
 
     public void SetCupPosition(CupPosition cupPosition) {
         cupServo.setPosition(cupPosition.position);
+    }
+
+    public boolean IsObjectInCup() {
+        double distance = cupDistanceSensor.getDistance(DistanceUnit.CM);
+        return (distance < CUP_OBJECT_THRESHOLD_CM) || (cupDistanceSensor.getLightDetected() > 0.1);
     }
 
     public DcMotorEx GetLiftMotor() { return liftMotor; }

@@ -117,7 +117,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         sleep(500);
 
         // Back up away from shipping hub
-        robot.drive.DriveByInches(0.50, 21.0 + distanceToDriveToShippingHub);
+        robot.drive.DriveInches(0.50, 21.0 + distanceToDriveToShippingHub);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         auto.liftController.ZeroLift();
@@ -134,7 +134,5 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         double strafeDistance = 18;
 
         robot.drive.StrafeInches(0.50, strafeDistance);
-
-        return true; // Passes
     }
 }

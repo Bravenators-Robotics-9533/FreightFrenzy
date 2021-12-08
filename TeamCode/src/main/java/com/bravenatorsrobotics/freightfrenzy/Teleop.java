@@ -17,11 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name="Teleop")
 public class Teleop extends TeleopMode<MecanumDrive> {
 
-    private static final double CUP_OBJECT_THRESHOLD_CM = 6.0; // CM
     private static final double REDUCE_SPEED_MULTIPLIER = 0.25;
-
     private static final double INTAKE_SPEED = 0.5;
-
     private static final double MAX_ROBOT_SPEED = 0.75;
 
     private Config config;
@@ -30,8 +27,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
     private DcMotorEx intake;
     private DcMotorEx turnTableSpinner;
-
-    private RevColorSensorV3 cupDistanceSensor;
 
     private boolean shouldOverrideSpeedReduction = false;
     private boolean shouldReduceSpeed = false;
@@ -67,8 +62,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
         intake = robot.GetMotor("intake", true);
         turnTableSpinner = robot.GetMotor("turnTable", false);
-
-        cupDistanceSensor = hardwareMap.get(RevColorSensorV3.class, "cupDistanceSensor");
     }
 
     private void InitializeServos() {
@@ -94,10 +87,10 @@ public class Teleop extends TeleopMode<MecanumDrive> {
         }
 
         // Detect Cup
-        if(IsObjectInCup() && !objectInCupToggle) {
+        if(liftController.IsObjectInCup() && !objectInCupToggle) {
             objectInCupToggle = true;
             liftController.SetCupPosition(LiftController.CupPosition.TILTED_POSITION);
-        } else if(objectInCupToggle && !IsObjectInCup()) {
+        } else if(objectInCupToggle && !liftController.IsObjectInCup()) {
             objectInCupToggle = false;
         }
 
@@ -165,14 +158,14 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
             // Turntable Direction Override
             case FtcGamePad.GAMEPAD_BACK:
-                if(pressed) {
+                if (pressed) {
                     turnTablePower = -turnTablePower;
                 }
 
                 break;
 
             case FtcGamePad.GAMEPAD_RBUMPER:
-                if(pressed) {
+                if (pressed) {
                     shouldJuiceTheIntake = !shouldJuiceTheIntake;
                 }
 
@@ -181,7 +174,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Turntable Spinner
             case FtcGamePad.GAMEPAD_X:
 
-                if(pressed) {
+                if (pressed) {
                     turnTableSpinner.setPower(turnTablePower);
                 } else {
                     turnTableSpinner.setPower(0);
@@ -191,7 +184,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
             // Intake
             case FtcGamePad.GAMEPAD_A:
-                if(pressed) {
+                if (pressed) {
                     intake.setPower(shouldJuiceTheIntake ? 1 : INTAKE_SPEED);
                 } else {
                     intake.setPower(0);
@@ -202,7 +195,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Reverse Intake
             case FtcGamePad.GAMEPAD_Y:
 
-                if(pressed) {
+                if (pressed) {
                     intake.setPower(shouldJuiceTheIntake ? -1 : -INTAKE_SPEED);
                 } else {
                     intake.setPower(0);
@@ -213,7 +206,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Toggle Cup
             case FtcGamePad.GAMEPAD_B:
 
-                if(pressed) {
+                if (pressed) {
                     liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
                 } else {
                     liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
@@ -223,7 +216,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
             // Automatic Lift Down
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
-                if(pressed) {
+                if (pressed) {
                     liftController.SetPower(-LiftController.LIFT_POWER);
                     shouldZeroLiftEncoder = true;
                 }
@@ -232,7 +225,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
             // Automatic Lift Position 1
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
-                if(pressed) {
+                if (pressed) {
                     liftController.GoToStage(LiftController.LiftStage.STAGE_1);
                 }
 
@@ -240,7 +233,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
             // Automatic Lift Position 2
             case FtcGamePad.GAMEPAD_DPAD_UP:
-                if(pressed) {
+                if (pressed) {
                     liftController.GoToStage(LiftController.LiftStage.STAGE_2);
                 }
 
@@ -248,17 +241,12 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
             // Automatic Lift Position 3
             case FtcGamePad.GAMEPAD_DPAD_RIGHT:
-                if(pressed) {
+                if (pressed) {
                     liftController.GoToStage(LiftController.LiftStage.STAGE_3);
                 }
 
                 break;
         }
-    }
-
-    private boolean IsObjectInCup() {
-        double distance = cupDistanceSensor.getDistance(DistanceUnit.CM);
-        return (distance < CUP_OBJECT_THRESHOLD_CM) || (cupDistanceSensor.getLightDetected() > 0.1);
     }
 
     private void PrintControls() {
