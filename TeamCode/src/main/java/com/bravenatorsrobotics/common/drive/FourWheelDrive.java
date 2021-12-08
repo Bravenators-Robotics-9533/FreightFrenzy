@@ -1,5 +1,7 @@
 package com.bravenatorsrobotics.common.drive;
 
+import androidx.annotation.NonNull;
+
 import com.bravenatorsrobotics.common.core.Robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -107,7 +109,7 @@ public class FourWheelDrive extends AbstractDrive {
         robot.SetRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void SetMotorPositions(MotorPosition motorPosition, double power) {
+    public void SetMotorPositions(@NonNull MotorPosition motorPosition, double power) {
         // Set target positions
         frontLeft.setTargetPosition(motorPosition.frontLeftPosition);
         frontRight.setTargetPosition(motorPosition.frontRightPosition);
@@ -115,8 +117,10 @@ public class FourWheelDrive extends AbstractDrive {
         backRight.setTargetPosition(motorPosition.backRightPosition);
 
         // Set Motor Mode and Power
-        robot.SetRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.SetRunMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         SetAllPower(power);
+
+        LoopUntilNotBusy();
 
         // Stop the motors
         this.Stop();
