@@ -18,28 +18,30 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
     public void RunSequence() {
 
         // Strafe into the warehouse
-        robot.drive.StrafeInches(0.5, 12);
+        robot.drive.StrafeInches(0.75, 24);
 
         // Capture the robot's warehouse position
         FourWheelDrive.MotorPosition warehousePosition = robot.drive.GetCurrentMotorPositions();
 
         // Move off the wall
-        robot.drive.DriveInches(0.5, 6);
+        robot.drive.DriveInches(0.75, 6);
 
         // Turn towards the game material
-        robot.drive.TurnDegrees(0.5, 90, AbstractDrive.TurnDirection.CLOCKWISE);
+        robot.drive.TurnDegrees(0.75, 90, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Drive to the game material
-        robot.drive.DriveInches(0.5, 6);
+        robot.drive.DriveInches(0.75, 6);
 
         // Get the game material
         boolean robotContainsGameMaterial = GetGameMaterial();
 
         // Return to the warehouse position
-        robot.drive.SetMotorPositions(warehousePosition, 0.5);
+        robot.drive.SetMotorPositions(warehousePosition, 0.75);
 
         // Strafe back to starting position
-        robot.drive.StrafeInches(0.5, -12);
+        robot.drive.StrafeInches(0.75, -24);
+
+        auto.intakeMotor.setPower(0);
 
         // Save the home position
         FourWheelDrive.MotorPosition homePosition = robot.drive.GetCurrentMotorPositions();
@@ -91,31 +93,28 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         }
 
         // Wait to spit out any stuck game material
-        sleep(750);
-
         // Stop the intake
-        auto.intakeMotor.setPower(0);
 
         return isObjectInCup;
     }
 
     private void DeliverBlockFromStartingPosition() {
         // Strafe to the alliance shipping hub
-        robot.drive.StrafeInches(0.5, -12);
+        robot.drive.StrafeInches(0.75, -22);
 
         // Move off the wall
-        robot.drive.DriveInches(0.5, 6);
+        robot.drive.DriveInches(0.75, 6);
 
         // Spin the lift to the correction position
-        robot.drive.TurnDegrees(0.5, 180, AbstractDrive.TurnDirection.CLOCKWISE);
+        robot.drive.TurnDegrees(0.75, 180, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Lift the lift to the top position
         auto.liftController.GoToStage(LiftController.LiftStage.STAGE_3);
 
-        final double distanceToShippingHub = 8.0; // inches
+        final double distanceToShippingHub = 16.0; // inches
 
         // Drive to the alliance shipping hub
-        robot.drive.DriveInches(0.5, -distanceToShippingHub);
+        robot.drive.DriveInches(0.75, -distanceToShippingHub);
 
         // Dump the cup
         auto.liftController.SetCupPosition(LiftController.CupPosition.DUMPED_POSITION);
@@ -123,7 +122,7 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         auto.liftController.SetCupPosition(LiftController.CupPosition.INTAKE_POSITION);
 
         // Drive away from the alliance shipping hub
-        robot.drive.DriveInches(0.5, distanceToShippingHub);
+        robot.drive.DriveInches(0.75, distanceToShippingHub);
 
         // Lower the lift
         auto.liftController.ZeroLift();
