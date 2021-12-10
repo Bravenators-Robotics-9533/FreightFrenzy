@@ -1,13 +1,10 @@
 package com.bravenatorsrobotics.freightfrenzy.autonomousSequence;
 
-import com.bravenatorsrobotics.common.core.Robot;
 import com.bravenatorsrobotics.common.drive.AbstractDrive;
 import com.bravenatorsrobotics.common.drive.FourWheelDrive;
 import com.bravenatorsrobotics.freightfrenzy.Auto;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class RedWarehouseSequence extends AbstractAutonomousSequence {
 
