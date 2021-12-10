@@ -17,8 +17,10 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
     @Override
     public void RunSequence() {
 
+        final double distanceWarehouse = 36; // One and a half tiles
+
         // Strafe into the warehouse
-        robot.drive.StrafeInches(0.75, 24);
+        robot.drive.StrafeInches(0.75, distanceWarehouse);
 
         // Capture the robot's warehouse position
         FourWheelDrive.MotorPosition warehousePosition = robot.drive.GetCurrentMotorPositions();
@@ -39,7 +41,7 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         robot.drive.SetMotorPositions(warehousePosition, 0.75);
 
         // Strafe back to starting position
-        robot.drive.StrafeInches(0.75, -24);
+        robot.drive.StrafeInches(0.75, -distanceWarehouse);
 
         auto.intakeMotor.setPower(0);
 
@@ -99,8 +101,10 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
     }
 
     private void DeliverBlockFromStartingPosition() {
+        final double inchesToStrafe = 24; // One tile distance
+
         // Strafe to the alliance shipping hub
-        robot.drive.StrafeInches(0.75, -22);
+        robot.drive.StrafeInches(0.75, -inchesToStrafe);
 
         // Move off the wall
         robot.drive.DriveInches(0.75, 6);
@@ -126,5 +130,14 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
 
         // Lower the lift
         auto.liftController.ZeroLift();
+
+        // Spin around to correct position
+        robot.drive.TurnDegrees(0.75, 180, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
+
+        // Drive back to the wall
+        robot.drive.DriveInches(0.75, -6);
+
+        // Strafe back home
+        robot.drive.StrafeInches(0.75, inchesToStrafe);
     }
 }
