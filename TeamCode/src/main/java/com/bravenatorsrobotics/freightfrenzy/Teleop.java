@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Teleop extends TeleopMode<MecanumDrive> {
 
     private static final double REDUCE_SPEED_MULTIPLIER = 0.25;
-    private static final double INTAKE_SPEED = 0.5;
+    private static final double INTAKE_SPEED = 1.0;
     private static final double MAX_ROBOT_SPEED = 0.75;
 
     private Config config;
