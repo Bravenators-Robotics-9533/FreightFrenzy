@@ -1,6 +1,7 @@
 package com.bravenatorsrobotics.freightfrenzy.subsystem;
 
 import com.bravenatorsrobotics.common.operation.OperationMode;
+import com.bravenatorsrobotics.freightfrenzy.Config;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -21,15 +22,14 @@ public class LiftController extends AbstractController {
     private final RevColorSensorV3 cupDistanceSensor;
 
     public enum LiftStage {
-        STAGE_1(45),
-        STAGE_2(185),
-        STAGE_3(357);
+        STAGE_1,
+        STAGE_2,
+        STAGE_3;
 
-        public final int liftPosition;
+        private int liftPosition;
 
-        LiftStage(int liftPosition) {
-            this.liftPosition = liftPosition;
-        }
+        public void SetLiftPosition(int position) { this.liftPosition = position; }
+        public int GetLiftPosition() { return liftPosition; }
     }
 
     public enum CupPosition {
@@ -44,7 +44,7 @@ public class LiftController extends AbstractController {
         }
     }
 
-    public LiftController(OperationMode<?> operationMode) {
+    public LiftController(OperationMode<?> operationMode, Config config) {
         super(operationMode);
 
         liftMotor = operationMode.hardwareMap.get(DcMotorEx.class, "lift");
@@ -56,6 +56,10 @@ public class LiftController extends AbstractController {
         cupServo = operationMode.hardwareMap.servo.get("cupServo");
 
         cupDistanceSensor = operationMode.hardwareMap.get(RevColorSensorV3.class, "cupDistanceSensor");
+
+        LiftStage.STAGE_1.SetLiftPosition(config.liftStage1Position);
+        LiftStage.STAGE_2.SetLiftPosition(config.liftStage2Position);
+        LiftStage.STAGE_3.SetLiftPosition(config.liftStage3Position);
     }
 
     public void RunToPosition(int position) {

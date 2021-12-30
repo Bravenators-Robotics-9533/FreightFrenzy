@@ -18,6 +18,10 @@ public class ConfigOpMode extends LinearOpMode {
         menu.addOption("Alliance Color", Config.AllianceColor.class, config.allianceColor);
         menu.addOption("Starting Position", Config.StartingPosition.class, config.startingPosition);
 
+        menu.addOption("Lift Stage 1 Position", 1000, 0, 10, config.liftStage1Position);
+        menu.addOption("Lift Stage 2 Position", 1000, 0, 10, config.liftStage2Position);
+        menu.addOption("Lift Stage 3 Position", 1000, 0, 10, config.liftStage3Position);
+
         menu.setGamepad(gamepad1);
         menu.setTelemetry(telemetry);
 
@@ -43,6 +47,10 @@ public class ConfigOpMode extends LinearOpMode {
                     config.startingPosition = Config.StartingPosition.WAREHOUSE;
                     break;
             }
+
+            config.liftStage1Position = Integer.parseInt(menu.getCurrentChoiceOf("Lift Stage 1 Position"));
+            config.liftStage2Position = Integer.parseInt(menu.getCurrentChoiceOf("Lift Stage 2 Position"));
+            config.liftStage3Position = Integer.parseInt(menu.getCurrentChoiceOf("Lift Stage 3 Position"));
 
             sleep(50);
         }

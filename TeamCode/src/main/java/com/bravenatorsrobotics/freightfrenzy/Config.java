@@ -16,6 +16,10 @@ public class Config {
         public void Load() {
             allianceColor = AllianceColor.ToAllianceColor(sharedPreferences.getString(ALLIANCE_COLOR, "RED"));
             startingPosition = StartingPosition.ToStartingPosition(sharedPreferences.getString(STARTING_POSITION, "STORAGE_UNIT"));
+
+            liftStage1Position = sharedPreferences.getInt(LIFT_STAGE_1_POSITION, liftStage1Position);
+            liftStage2Position = sharedPreferences.getInt(LIFT_STAGE_2_POSITION, liftStage2Position);
+            liftStage3Position = sharedPreferences.getInt(LIFT_STAGE_3_POSITION, liftStage3Position);
         }
 
         public void Save() {
@@ -23,6 +27,11 @@ public class Config {
 
             editor.putString(ALLIANCE_COLOR, allianceColor.name());
             editor.putString(STARTING_POSITION, startingPosition.name());
+
+            // Lift Positions
+            editor.putInt(LIFT_STAGE_1_POSITION, liftStage1Position);
+            editor.putInt(LIFT_STAGE_2_POSITION, liftStage2Position);
+            editor.putInt(LIFT_STAGE_3_POSITION, liftStage3Position);
 
             editor.apply();
         }
@@ -58,4 +67,13 @@ public class Config {
             }
         }
 
+        // Lift Stages
+        public static final String LIFT_STAGE_1_POSITION = "LiftStage1Position";
+        public int liftStage1Position = 200;
+
+        public static final String LIFT_STAGE_2_POSITION = "LiftStage2Position";
+        public int liftStage2Position = 400;
+
+        public static final String LIFT_STAGE_3_POSITION = "LiftStage3Position";
+        public int liftStage3Position = 600;
 }

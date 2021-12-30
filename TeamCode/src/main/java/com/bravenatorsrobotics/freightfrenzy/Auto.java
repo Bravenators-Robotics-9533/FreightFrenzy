@@ -37,7 +37,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         imuController = new IMUController(this);
         imuController.Initialize();
 
-        liftController = new LiftController(this);
+        liftController = new LiftController(this, config);
 
         turnTableSpinner = robot.GetMotor("turnTable", false);
         intakeMotor = robot.GetMotor("intake", true);

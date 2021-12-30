@@ -54,7 +54,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
         config = new Config(hardwareMap.appContext);
 
-        liftController = new LiftController(this);
+        liftController = new LiftController(this, config);
 
         // Reverse the turn table power if on red alliance
         if(config.allianceColor == Config.AllianceColor.BLUE)
