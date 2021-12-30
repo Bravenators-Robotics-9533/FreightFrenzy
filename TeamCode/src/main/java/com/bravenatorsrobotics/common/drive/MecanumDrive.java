@@ -4,10 +4,30 @@ import com.bravenatorsrobotics.common.core.Robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import java.util.ArrayList;
+
+import dk.sgjesse.r8api.FileOrigin;
+
 public class MecanumDrive extends FourWheelDrive {
 
     public MecanumDrive(Robot<? extends MecanumDrive> robot) {
         super(robot);
+    }
+
+    protected FourWheelDrive.MotorPosition accumulatedDeltaPosition;
+
+    public void PushBackMovement(FourWheelDrive.MotorPosition deltaPosition) {
+        accumulatedDeltaPosition = accumulatedDeltaPosition.Add(deltaPosition);
+    }
+
+    public void ClearMovements() {
+        accumulatedDeltaPosition = new FourWheelDrive.MotorPosition(0, 0, 0, 0);
+    }
+
+    public void RunToAccumulatedPosition(double power) {
+        FourWheelDrive.MotorPosition finalPosition = GetCurrentMotorPositions().Add(accumulatedDeltaPosition);
+        super.SetMotorPositions(finalPosition, power);
+        ClearMovements(); // Clear at the end
     }
 
     protected static double ScalePower(double value, double max) {

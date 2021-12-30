@@ -25,14 +25,12 @@ public class RedWarehouseSequence extends AbstractAutonomousSequence {
         // Capture the robot's warehouse position
         FourWheelDrive.MotorPosition warehousePosition = robot.drive.GetCurrentMotorPositions();
 
-        // Move off the wall
-        robot.drive.DriveInches(ROBOT_SPEED, 6);
-
-        // Turn towards the game material
-        robot.drive.TurnDegrees(ROBOT_SPEED, 90, AbstractDrive.TurnDirection.CLOCKWISE);
-
-        // Drive to the game material
-        robot.drive.DriveInches(ROBOT_SPEED, 6);
+        // Calculate the encoder delta position to drive off the wall, turn, and drive towards the game material
+        robot.drive.ClearMovements();
+        robot.drive.PushBackMovement(robot.drive.CalculateDriveByInches(6, 6)); // Move off the wall
+        robot.drive.PushBackMovement(robot.drive.CalculateTurnDegrees(90, AbstractDrive.TurnDirection.CLOCKWISE)); // Turn towards the game elements
+        robot.drive.PushBackMovement(robot.drive.CalculateDriveByInches(6, 6)); // Get closer to the game elements
+        robot.drive.RunToAccumulatedPosition(ROBOT_SPEED); // Run the accumulated movements
 
         // Get the game material
         boolean robotContainsGameMaterial = GetGameMaterial();

@@ -37,6 +37,15 @@ public class FourWheelDrive extends AbstractDrive {
             this.backRightPosition = right;
         }
 
+        public MotorPosition Add(MotorPosition deltaPosition) {
+            return new MotorPosition(
+                    this.frontLeftPosition + deltaPosition.frontLeftPosition,
+                    this.frontRightPosition + deltaPosition.frontRightPosition,
+                    this.backLeftPosition + deltaPosition.backLeftPosition,
+                    this.backRightPosition + deltaPosition.backRightPosition
+            );
+        }
+
     }
 
     public FourWheelDrive(Robot<? extends FourWheelDrive> robot) {
