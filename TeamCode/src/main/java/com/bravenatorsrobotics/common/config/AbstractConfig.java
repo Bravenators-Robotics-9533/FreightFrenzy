@@ -32,25 +32,13 @@ public abstract class AbstractConfig {
 
     private SharedPreferences sharedPreferences = null;
 
-    public AbstractConfig(@NonNull String configurationID, Context context) {
+    public AbstractConfig(@NonNull String configurationID, @NonNull Context context) {
         this.configurationID = configurationID;
 
         this.integerMap = new HashMap<>();
         this.floatMap = new HashMap<>();
         this.booleanMap = new HashMap<>();
         this.enumMap = new HashMap<>();
-
-        if(context != null) {
-            this.sharedPreferences = context.getSharedPreferences(configurationID, Context.MODE_PRIVATE);
-
-            this.PutConfigs();
-            this.Load();
-        }
-    }
-
-    public void Initialize(@NonNull Context context) {
-        if(this.sharedPreferences != null)
-            return;
 
         this.sharedPreferences = context.getSharedPreferences(configurationID, Context.MODE_PRIVATE);
 
