@@ -14,8 +14,10 @@ public class Config {
         }
 
         public void Load() {
-            allianceColor = AllianceColor.ToAllianceColor(sharedPreferences.getString(ALLIANCE_COLOR, "RED"));
-            startingPosition = StartingPosition.ToStartingPosition(sharedPreferences.getString(STARTING_POSITION, "STORAGE_UNIT"));
+            allianceColor = AllianceColor.ToAllianceColor(sharedPreferences.getString(ALLIANCE_COLOR, AllianceColor.RED.name()));
+            startingPosition = StartingPosition.ToStartingPosition(sharedPreferences.getString(STARTING_POSITION, StartingPosition.STORAGE_UNIT.name()));
+
+            shouldJoinGamepads = sharedPreferences.getBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
 
             liftStage1Position = sharedPreferences.getInt(LIFT_STAGE_1_POSITION, liftStage1Position);
             liftStage2Position = sharedPreferences.getInt(LIFT_STAGE_2_POSITION, liftStage2Position);
@@ -27,6 +29,9 @@ public class Config {
 
             editor.putString(ALLIANCE_COLOR, allianceColor.name());
             editor.putString(STARTING_POSITION, startingPosition.name());
+
+            // Join Gamepads
+            editor.putBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
 
             // Lift Positions
             editor.putInt(LIFT_STAGE_1_POSITION, liftStage1Position);
@@ -66,6 +71,10 @@ public class Config {
                 }
             }
         }
+
+        // Should Join Gamepads
+        public static final String SHOULD_JOIN_GAMEPADS = "ShouldJoinGamepads";
+        public boolean shouldJoinGamepads = false;
 
         // Lift Stages
         public static final String LIFT_STAGE_1_POSITION = "LiftStage1Position";

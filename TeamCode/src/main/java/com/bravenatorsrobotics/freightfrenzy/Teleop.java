@@ -33,13 +33,6 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     private boolean shouldReverse = false;
 
     private boolean shouldZeroLiftEncoder = false;
-    private boolean shouldJuiceTheIntake = false;
-
-    // TODO: Reimplement
-//    private final PowerScale drivePowerScale = new PowerScale(this, 1.0 / 0.25);
-//    private double currentV = 0.0;
-//    private double currentH = 0.0;
-//    private double currentR = 0.0;
 
     private boolean objectInCupToggle = false;
 
@@ -154,19 +147,19 @@ public class Teleop extends TeleopMode<MecanumDrive> {
 
     @Override
     protected void OnOperatorGamePadChange(FtcGamePad gamePad, int button, boolean pressed) {
+
+        // If we should join the gamepads only run the driver gamepad
+        if(config.shouldJoinGamepads) {
+            this.OnDriverGamePadChange(gamePad, button, pressed);
+            return;
+        }
+
         switch (button) {
 
             // Turntable Direction Override
             case FtcGamePad.GAMEPAD_BACK:
                 if (pressed) {
                     turnTablePower = -turnTablePower;
-                }
-
-                break;
-
-            case FtcGamePad.GAMEPAD_RBUMPER:
-                if (pressed) {
-                    shouldJuiceTheIntake = !shouldJuiceTheIntake;
                 }
 
                 break;
@@ -185,7 +178,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             // Intake
             case FtcGamePad.GAMEPAD_A:
                 if (pressed) {
-                    intake.setPower(shouldJuiceTheIntake ? 1 : INTAKE_SPEED);
+                    intake.setPower(INTAKE_SPEED);
                 } else {
                     intake.setPower(0);
                 }
@@ -196,7 +189,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
             case FtcGamePad.GAMEPAD_Y:
 
                 if (pressed) {
-                    intake.setPower(shouldJuiceTheIntake ? -1 : -INTAKE_SPEED);
+                    intake.setPower(-INTAKE_SPEED);
                 } else {
                     intake.setPower(0);
                 }

@@ -186,6 +186,11 @@ public class SimpleMenu {
         return "ERROR - NO OPTION BY THAT NAME";
     }
 
+    public boolean getCurrentBooleanChoiceOf(String option) {
+        String result = getCurrentChoiceOf(option);
+        return result.equals("YES");
+    }
+
     public void displayMenu() {
         Option o;
         int loops = 1;
