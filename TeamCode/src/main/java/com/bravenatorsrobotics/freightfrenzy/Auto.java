@@ -51,9 +51,9 @@ public class Auto extends AutonomousMode<MecanumDrive> {
 
     private void AssignAutonomousSequence() {
         // Create the appropriate sequence
-        switch (config.startingPosition) {
+        switch (config.GetStartingPosition()) {
             case WAREHOUSE:
-                if(config.allianceColor == Config.AllianceColor.RED) {
+                if(config.GetAllianceColor() == Config.AllianceColor.RED) {
                     // Red Warehouse
                     sequence = new RedWarehouseSequence(this);
                 } else {
@@ -62,7 +62,7 @@ public class Auto extends AutonomousMode<MecanumDrive> {
                 }
                 break;
             case STORAGE_UNIT:
-                if(config.allianceColor == Config.AllianceColor.RED) {
+                if(config.GetAllianceColor() == Config.AllianceColor.RED) {
                     // Red Storage Unit
                     sequence = new RedStorageUnitSequence(this);
                 } else {

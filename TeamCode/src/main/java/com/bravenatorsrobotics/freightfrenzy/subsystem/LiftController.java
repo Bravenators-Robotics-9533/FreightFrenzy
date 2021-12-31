@@ -57,9 +57,9 @@ public class LiftController extends AbstractController {
 
         cupDistanceSensor = operationMode.hardwareMap.get(RevColorSensorV3.class, "cupDistanceSensor");
 
-        LiftStage.STAGE_1.SetLiftPosition(config.liftStage1Position);
-        LiftStage.STAGE_2.SetLiftPosition(config.liftStage2Position);
-        LiftStage.STAGE_3.SetLiftPosition(config.liftStage3Position);
+        LiftStage.STAGE_1.SetLiftPosition(config.GetLiftStage1Position());
+        LiftStage.STAGE_2.SetLiftPosition(config.GetLiftStage2Position());
+        LiftStage.STAGE_3.SetLiftPosition(config.GetLiftStage3Position());
     }
 
     public void RunToPosition(int position) {

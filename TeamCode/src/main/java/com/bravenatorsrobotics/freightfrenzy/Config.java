@@ -3,86 +3,76 @@ package com.bravenatorsrobotics.freightfrenzy;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class Config {
+import com.bravenatorsrobotics.common.config.AbstractConfig;
 
-        private static final String PREFERENCES = "BravenatorsConfig";
-        private final SharedPreferences sharedPreferences;
+import java.util.ArrayList;
 
-        public Config(Context context) {
-            sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
-            Load();
-        }
+public class Config extends AbstractConfig {
 
-        public void Load() {
-            allianceColor = AllianceColor.ToAllianceColor(sharedPreferences.getString(ALLIANCE_COLOR, AllianceColor.RED.name()));
-            startingPosition = StartingPosition.ToStartingPosition(sharedPreferences.getString(STARTING_POSITION, StartingPosition.STORAGE_UNIT.name()));
+    private static final String PREFERENCES = "BravenatorsConfig";
 
-            shouldJoinGamepads = sharedPreferences.getBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
+    public Config(Context context) {
+        super(PREFERENCES, context);
+    }
 
-            liftStage1Position = sharedPreferences.getInt(LIFT_STAGE_1_POSITION, liftStage1Position);
-            liftStage2Position = sharedPreferences.getInt(LIFT_STAGE_2_POSITION, liftStage2Position);
-            liftStage3Position = sharedPreferences.getInt(LIFT_STAGE_3_POSITION, liftStage3Position);
-        }
+    // Alliance Color
+    public static final String ALLIANCE_COLOR = "Alliance Color";
+    public enum AllianceColor { RED, BLUE }
+    private AllianceColor allianceColor;
+    public AllianceColor GetAllianceColor() { return this.allianceColor; }
+    public void SetAllianceColor(AllianceColor allianceColor) { this.allianceColor = allianceColor; }
 
-        public void Save() {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+    // Starting Position
+    public static final String STARTING_POSITION = "Starting Position";
+    public enum StartingPosition { STORAGE_UNIT, WAREHOUSE }
+    private StartingPosition startingPosition;
+    public StartingPosition GetStartingPosition() { return this.startingPosition; }
+    public void SetStartingPosition(StartingPosition startingPosition) { this.startingPosition = startingPosition; }
 
-            editor.putString(ALLIANCE_COLOR, allianceColor.name());
-            editor.putString(STARTING_POSITION, startingPosition.name());
+    // Should Join Gamepads
+    public static final String SHOULD_JOIN_GAMEPADS = "Should Join Gamepads";
+    private boolean shouldJoinGamepads = false;
+    public boolean ShouldJoinGamepads() { return this.shouldJoinGamepads; }
+    public void SetShouldJoinGamepads(boolean value) { this.shouldJoinGamepads = value; }
 
-            // Join Gamepads
-            editor.putBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
+    // Lift Stages
+    public static final String LIFT_STAGE_1_POSITION = "Lift Stage 1 Position";
+    private int liftStage1Position = 200;
+    public int GetLiftStage1Position() { return this.liftStage1Position; }
+    public void SetLiftStage1Position(int value) { this.liftStage1Position = value; }
 
-            // Lift Positions
-            editor.putInt(LIFT_STAGE_1_POSITION, liftStage1Position);
-            editor.putInt(LIFT_STAGE_2_POSITION, liftStage2Position);
-            editor.putInt(LIFT_STAGE_3_POSITION, liftStage3Position);
+    public static final String LIFT_STAGE_2_POSITION = "Lift Stage 2 Position";
+    private int liftStage2Position = 400;
+    public int GetLiftStage2Position() { return this.liftStage2Position; }
+    public void SetLiftStage2Position(int value) { this.liftStage2Position = value; }
 
-            editor.apply();
-        }
+    public static final String LIFT_STAGE_3_POSITION = "Lift Stage 3 Position";
+    private int liftStage3Position = 600;
+    public int GetLiftStage3Position() { return this.liftStage3Position; }
+    public void SetLiftStage3Position(int value) { this.liftStage3Position = value; }
 
-        // Alliance Color
-        public static final String ALLIANCE_COLOR = "AllianceColor";
-        public AllianceColor allianceColor;
-        public enum AllianceColor {
-            RED, BLUE;
+    @Override
+    protected void PutConfigs() {
+        super.PutEnum(STARTING_POSITION, startingPosition);
+        super.PutEnum(ALLIANCE_COLOR, allianceColor);
 
-            public static AllianceColor ToAllianceColor(String allianceColor) {
-                try {
-                    return valueOf(allianceColor);
-                } catch(Exception e) {
-                    return RED; // Default Alliance Color
-                }
-            }
-        }
+        super.PutBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
 
-        // Starting Position
-        public static final String STARTING_POSITION = "StartingPosition";
-        public StartingPosition startingPosition;
-        public enum StartingPosition {
-            STORAGE_UNIT,
-            WAREHOUSE;
+        super.PutInteger(LIFT_STAGE_1_POSITION, liftStage1Position);
+        super.PutInteger(LIFT_STAGE_2_POSITION, liftStage2Position);
+        super.PutInteger(LIFT_STAGE_3_POSITION, liftStage3Position);
+    }
 
-            public static StartingPosition ToStartingPosition(String startingPosition) {
-                try {
-                    return valueOf(startingPosition);
-                } catch (Exception e) {
-                    return STORAGE_UNIT;
-                }
-            }
-        }
+    @Override
+    protected void GetConfigs() {
+        this.startingPosition = super.GetEnum(STARTING_POSITION, startingPosition);
+        this.allianceColor = super.GetEnum(ALLIANCE_COLOR, allianceColor);
 
-        // Should Join Gamepads
-        public static final String SHOULD_JOIN_GAMEPADS = "ShouldJoinGamepads";
-        public boolean shouldJoinGamepads = false;
+        this.shouldJoinGamepads = super.GetBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
 
-        // Lift Stages
-        public static final String LIFT_STAGE_1_POSITION = "LiftStage1Position";
-        public int liftStage1Position = 200;
+        this.liftStage1Position = super.GetInteger(LIFT_STAGE_1_POSITION, liftStage1Position);
+        this.liftStage2Position = super.GetInteger(LIFT_STAGE_2_POSITION, liftStage2Position);
+        this.liftStage3Position = super.GetInteger(LIFT_STAGE_3_POSITION, liftStage3Position);
+    }
 
-        public static final String LIFT_STAGE_2_POSITION = "LiftStage2Position";
-        public int liftStage2Position = 400;
-
-        public static final String LIFT_STAGE_3_POSITION = "LiftStage3Position";
-        public int liftStage3Position = 600;
 }

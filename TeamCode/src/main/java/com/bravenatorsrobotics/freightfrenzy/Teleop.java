@@ -50,7 +50,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
         liftController = new LiftController(this, config);
 
         // Reverse the turn table power if on red alliance
-        if(config.allianceColor == Config.AllianceColor.BLUE)
+        if(config.GetAllianceColor() == Config.AllianceColor.BLUE)
             turnTablePower = -turnTablePower;
 
         intake = robot.GetMotor("intake", true);
@@ -149,7 +149,7 @@ public class Teleop extends TeleopMode<MecanumDrive> {
     protected void OnOperatorGamePadChange(FtcGamePad gamePad, int button, boolean pressed) {
 
         // If we should join the gamepads only run the driver gamepad
-        if(config.shouldJoinGamepads) {
+        if(config.ShouldJoinGamepads()) {
             this.OnDriverGamePadChange(gamePad, button, pressed);
             return;
         }
