@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,10 +16,10 @@ public abstract class AbstractConfig {
 
     public static class EnumMapValue {
 
-        public final Enum<?> enumeration;
+        public final String enumeration;
         public final String value;
 
-        public EnumMapValue(Enum<?> enumeration, String value) {
+        public EnumMapValue(String enumeration, String value) {
             this.enumeration = enumeration;
             this.value = value;
         }
@@ -43,7 +44,8 @@ public abstract class AbstractConfig {
         this.sharedPreferences = context.getSharedPreferences(configurationID, Context.MODE_PRIVATE);
 
         this.PutConfigs();
-        this.Load();
+
+//        this.Load();
     }
 
     protected abstract void PutConfigs();
@@ -115,8 +117,8 @@ public abstract class AbstractConfig {
         booleanMap.put(identifier, value);
     }
 
-    protected <T extends Enum<T>> void PutEnum(@NonNull String identifier, @NonNull Enum<T> enumeration) {
-        this.enumMap.put(identifier, new EnumMapValue(enumeration, enumeration.name()));
+    protected void PutEnum(@NonNull String identifier, @NonNull String enumerationName) {
+        this.enumMap.put(identifier, new EnumMapValue(identifier, enumerationName));
     }
 
     protected int GetInteger(@NonNull String identifier, int defaultValue) {

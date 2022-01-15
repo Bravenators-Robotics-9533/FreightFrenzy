@@ -18,14 +18,14 @@ public class Config extends AbstractConfig {
     // Alliance Color
     public static final String ALLIANCE_COLOR = "Alliance Color";
     public enum AllianceColor { RED, BLUE }
-    private AllianceColor allianceColor;
+    private AllianceColor allianceColor = AllianceColor.RED;
     public AllianceColor GetAllianceColor() { return this.allianceColor; }
     public void SetAllianceColor(AllianceColor allianceColor) { this.allianceColor = allianceColor; }
 
     // Starting Position
     public static final String STARTING_POSITION = "Starting Position";
     public enum StartingPosition { STORAGE_UNIT, WAREHOUSE }
-    private StartingPosition startingPosition;
+    private StartingPosition startingPosition = StartingPosition.STORAGE_UNIT;
     public StartingPosition GetStartingPosition() { return this.startingPosition; }
     public void SetStartingPosition(StartingPosition startingPosition) { this.startingPosition = startingPosition; }
 
@@ -53,8 +53,8 @@ public class Config extends AbstractConfig {
 
     @Override
     protected void PutConfigs() {
-        super.PutEnum(STARTING_POSITION, startingPosition);
-        super.PutEnum(ALLIANCE_COLOR, allianceColor);
+        super.PutEnum(STARTING_POSITION, startingPosition.name());
+        super.PutEnum(ALLIANCE_COLOR, allianceColor.name());
 
         super.PutBoolean(SHOULD_JOIN_GAMEPADS, shouldJoinGamepads);
 

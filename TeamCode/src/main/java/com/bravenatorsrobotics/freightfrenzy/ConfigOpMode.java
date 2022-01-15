@@ -43,7 +43,7 @@ public class ConfigOpMode extends LinearOpMode {
             menu.displayMenu();
 
             for(ConfigurableItem item : configurableItems) {
-                item.RunSaveRunnable();
+//                item.RunSaveRunnable();
             }
 
             sleep(50);
