@@ -21,7 +21,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.DriveByInches(0.25, 10);
+        robot.drive.DriveByInches(0.25, 11);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -29,17 +29,17 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.StrafeInches(0.25, -10.0);
+        robot.drive.StrafeInches(0.25, -10.5);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
         auto.turnTableSpinner.setPower(1);
-        sleep(2500);
+        sleep(2000);
         auto.turnTableSpinner.setPower(0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.StrafeInches(0.25, 10.0);
+        robot.drive.StrafeInches(0.25, 10.5);
 
         // Calculate Turn Distance
         final double turnDistance = auto.imuController.GetZAxis() - startAngle;
@@ -90,7 +90,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
         // Drive to alliance shipping hub
 
         // Turn towards shipping hub
-        int degreesToShippingHub = 55;
+        int degreesToShippingHub = 65;
         robot.drive.TurnDegrees(0.25, degreesToShippingHub, AbstractDrive.TurnDirection.COUNTER_CLOCKWISE);
 
         // Lift the lift
@@ -105,7 +105,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
             auto.liftController.GoToStage(LiftController.LiftStage.STAGE_2);
         }
 
-        final double distanceToDriveToShippingHub = -6.75;
+        final double distanceToDriveToShippingHub = -8.75;
 
         // Drive to shipping hub
         robot.drive.DriveByInches(0.30, distanceToDriveToShippingHub);

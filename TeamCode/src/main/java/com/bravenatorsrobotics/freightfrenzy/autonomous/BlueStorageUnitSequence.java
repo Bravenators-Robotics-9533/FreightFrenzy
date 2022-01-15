@@ -36,7 +36,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         // Strafe away from turn-table
         sleep(SLEEP_AMOUNT_MILLIS);
-        StrafeSeconds(-0.25, 0.65);
+        StrafeSeconds(-0.25, 0.85);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Straighten out into wall
@@ -99,7 +99,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        final double shippingHubDriveDistance = 9.50;
+        final double shippingHubDriveDistance = 10.50;
 
         // Drive into the shipping hub
         robot.drive.DriveByInches(0.25, -shippingHubDriveDistance);

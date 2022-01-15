@@ -22,8 +22,8 @@ public class LiftController extends AbstractController {
     }
 
     public enum CupPosition {
-        DUMPED_POSITION(0),
-        TILTED_POSITION(0.6),
+        DUMPED_POSITION(0.5),
+        TILTED_POSITION(1),
         INTAKE_POSITION(1);
 
         public final double position;
@@ -52,6 +52,7 @@ public class LiftController extends AbstractController {
     }
 
     public void RunToPosition(int position) {
+        telemetry.addLine("Going To Position: " + position);
         liftMotor.setTargetPosition(position);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(LIFT_POWER);
