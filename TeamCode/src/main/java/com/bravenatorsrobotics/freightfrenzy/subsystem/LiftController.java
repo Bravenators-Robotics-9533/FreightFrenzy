@@ -12,7 +12,7 @@ public class LiftController extends AbstractController {
     public enum LiftStage {
         STAGE_1(45),
         STAGE_2(185),
-        STAGE_3(357);
+        STAGE_3(400);
 
         public final int liftPosition;
 
