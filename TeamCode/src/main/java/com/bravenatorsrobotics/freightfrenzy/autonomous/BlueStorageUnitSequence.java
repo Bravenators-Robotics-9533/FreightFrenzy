@@ -36,7 +36,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         // Strafe away from turn-table
         sleep(SLEEP_AMOUNT_MILLIS);
-        StrafeSeconds(-0.25, 0.85);
+        StrafeSeconds(-0.25, 0.65);
         sleep(SLEEP_AMOUNT_MILLIS);
 
         // Straighten out into wall

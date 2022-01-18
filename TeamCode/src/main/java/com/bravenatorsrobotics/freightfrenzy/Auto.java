@@ -1,20 +1,16 @@
 package com.bravenatorsrobotics.freightfrenzy;
 
-import com.bravenatorsrobotics.common.drive.AbstractDrive;
 import com.bravenatorsrobotics.common.drive.MecanumDrive;
 import com.bravenatorsrobotics.common.operation.AutonomousMode;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.AbstractAutonomousSequence;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.BlueStorageUnitSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.RedStorageUnitSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomous.redstorageunit.RedStorageUnitSequence;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.WarehouseSequence;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.IMUController;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Autonomous")
 public class Auto extends AutonomousMode<MecanumDrive> {

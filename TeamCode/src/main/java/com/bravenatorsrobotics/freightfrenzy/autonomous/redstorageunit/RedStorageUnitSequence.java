@@ -1,7 +1,8 @@
-package com.bravenatorsrobotics.freightfrenzy.autonomous;
+package com.bravenatorsrobotics.freightfrenzy.autonomous.redstorageunit;
 
 import com.bravenatorsrobotics.common.drive.AbstractDrive;
 import com.bravenatorsrobotics.freightfrenzy.Auto;
+import com.bravenatorsrobotics.freightfrenzy.autonomous.AbstractAutonomousSequence;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -29,7 +30,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.StrafeInches(0.25, -10.5);
+        robot.drive.StrafeInches(0.25, -10.0);
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
@@ -39,7 +40,7 @@ public class RedStorageUnitSequence extends AbstractAutonomousSequence {
 
         sleep(SLEEP_AMOUNT_MILLIS);
 
-        robot.drive.StrafeInches(0.25, 10.5);
+        robot.drive.StrafeInches(0.25, 10.0);
 
         // Calculate Turn Distance
         final double turnDistance = auto.imuController.GetZAxis() - startAngle;
