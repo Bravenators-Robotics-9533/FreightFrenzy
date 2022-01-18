@@ -12,9 +12,9 @@ public class LinearStateMachine {
         this.linearStates = linearStates;
     }
 
-    public void RunAllStates() {
+    public void RunAllStatesLinear() {
         for (LinearState linearState : linearStates) {
-            telemetry.addData("Current State", linearState.getClass().getSimpleName());
+            telemetry.addData("Current State", linearState.stateName);
             telemetry.update();
 
             linearState.RunState();

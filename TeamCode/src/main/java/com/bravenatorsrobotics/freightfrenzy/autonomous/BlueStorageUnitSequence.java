@@ -14,7 +14,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
     }
 
     @Override
-    public boolean RunSequence() {
+    public void RunSequence() {
         final double startAngle = auto.imuController.GetZAxis();
 
         // Strafe off wall
@@ -126,8 +126,6 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
         // Strafe into the shipping hub tape
         StrafeSeconds(-0.25, 1.25);
-
-        return true; // Sequence Succeeded
     }
 
     private void StrafeSeconds(double power, double time) {

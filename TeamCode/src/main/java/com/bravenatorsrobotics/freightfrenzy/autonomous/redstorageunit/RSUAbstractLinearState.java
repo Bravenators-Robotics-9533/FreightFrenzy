@@ -1,41 +1,38 @@
-package com.bravenatorsrobotics.freightfrenzy.autonomous;
+package com.bravenatorsrobotics.freightfrenzy.autonomous.redstorageunit;
 
 import com.bravenatorsrobotics.common.core.Robot;
 import com.bravenatorsrobotics.common.drive.MecanumDrive;
+import com.bravenatorsrobotics.common.linearstatemachine.LinearState;
 import com.bravenatorsrobotics.freightfrenzy.Auto;
-import com.bravenatorsrobotics.freightfrenzy.Teleop;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public abstract class AbstractAutonomousSequence {
-
-    public static final int SLEEP_AMOUNT_MILLIS = 20;
-    public static final double ROBOT_SPEED = 0.75;
+public abstract class RSUAbstractLinearState extends LinearState {
 
     protected final Auto auto;
     protected final Robot<MecanumDrive> robot;
     protected final Telemetry telemetry;
+    protected final RedStorageUnitSequence redStorageUnitSequence;
 
-    public AbstractAutonomousSequence(Auto auto) {
+    public RSUAbstractLinearState(String stateName, Auto auto, RedStorageUnitSequence redStorageUnitSequence) {
+        super(stateName);
+
         this.auto = auto;
         this.robot = auto.GetRobot();
         this.telemetry = auto.telemetry;
+        this.redStorageUnitSequence = redStorageUnitSequence;
     }
-
-    public abstract void RunSequence();
 
     public void sleep(int millis) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
 
-        while(opModeIsActive()) {
+        while(auto.opModeIsActive()) {
             if(timer.milliseconds() >= millis) {
                 break;
             }
         }
     }
-
-    public boolean opModeIsActive() { return auto.opModeIsActive(); }
 
 }

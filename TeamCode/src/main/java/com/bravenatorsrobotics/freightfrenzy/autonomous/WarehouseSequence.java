@@ -9,9 +9,7 @@ public class WarehouseSequence extends AbstractAutonomousSequence {
     }
 
     @Override
-    public boolean RunSequence() {
+    public void RunSequence() {
         robot.drive.DriveByInches(0.5, -37);
-
-        return true; // Sequence Succeeded
     }
 }
