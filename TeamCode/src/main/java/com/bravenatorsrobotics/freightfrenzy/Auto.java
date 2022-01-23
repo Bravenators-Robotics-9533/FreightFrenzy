@@ -4,7 +4,7 @@ import com.bravenatorsrobotics.common.drive.MecanumDrive;
 import com.bravenatorsrobotics.common.operation.AutonomousMode;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.AbstractAutonomousSequence;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.BlueStorageUnitSequence;
-import com.bravenatorsrobotics.freightfrenzy.autonomous.redstorageunit.RedStorageUnitSequence;
+import com.bravenatorsrobotics.freightfrenzy.autonomous.RedStorageUnitSequence;
 import com.bravenatorsrobotics.freightfrenzy.autonomous.WarehouseSequence;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.IMUController;
 import com.bravenatorsrobotics.freightfrenzy.subsystem.LiftController;
