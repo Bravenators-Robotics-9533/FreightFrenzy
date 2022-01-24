@@ -68,4 +68,6 @@ public class VisionController extends AbstractController {
         webcam.stopStreaming();
     }
 
+    public void PauseViewport() { webcam.pauseViewport(); }
+    public void ResumeViewport() { webcam.resumeViewport(); }
 }
