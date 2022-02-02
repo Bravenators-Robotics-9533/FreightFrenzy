@@ -20,18 +20,18 @@ public class AllianceShippingElementPipeline extends OpenCvPipeline {
         LEFT, RIGHT, CENTER, UNIDENTIFIED
     }
 
-    public static final Scalar LOW_HSV = new Scalar(23, 50, 70);
-    public static final Scalar HIGH_HSV = new Scalar(32, 255, 255);
-    public static final double PERCENT_COLOR_THRESHOLD = 0.4; // 40%
+    public static final Scalar LOW_HSV = new Scalar(155, 155, 84);
+    public static final Scalar HIGH_HSV = new Scalar(190, 255, 255);
+    public static final double PERCENT_COLOR_THRESHOLD = 0.15; // 40%
 
     public static final Rect LEFT_ROI = new Rect(
-            new Point(60, 35),
-            new Point(120, 75)
+            new Point(0, 0),
+            new Point((1280.0f / 2.0f)  - 100, 720)
     );
 
     public static final Rect RIGHT_ROI = new Rect(
-            new Point(140, 35),
-            new Point(200, 75)
+            new Point((1280.0f / 2.0f) + 100, 0),
+            new Point(1280, 720)
     );
 
     private AllianceShippingElementLocation shippingElementLocation = AllianceShippingElementLocation.UNIDENTIFIED;
@@ -64,14 +64,14 @@ public class AllianceShippingElementPipeline extends OpenCvPipeline {
         boolean isRightPosition = rightValue > PERCENT_COLOR_THRESHOLD;
 
         if(isLeftPosition) {
-            shippingElementLocation = AllianceShippingElementLocation.LEFT;
-            telemetry.addData("Shipping Element Location", "Left");
+            shippingElementLocation = AllianceShippingElementLocation.CENTER;
+            telemetry.addData("Shipping Element Location", "Center");
         } else if(isRightPosition) {
             shippingElementLocation = AllianceShippingElementLocation.RIGHT;
             telemetry.addData("Shipping Element Location", "Right");
         } else {
-            shippingElementLocation = AllianceShippingElementLocation.CENTER;
-            telemetry.addData("Shipping Element Location", "Center");
+            shippingElementLocation = AllianceShippingElementLocation.LEFT;
+            telemetry.addData("Shipping Element Location", "Left");
         }
 
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB); // Convert back to RGB for rectangle
