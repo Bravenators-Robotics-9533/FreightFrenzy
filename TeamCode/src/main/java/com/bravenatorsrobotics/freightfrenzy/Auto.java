@@ -78,6 +78,8 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         telemetry.addData("Shipping Element Location", visionPipeline.GetAllianceShippingElementLocation().name());
         telemetry.update();
 
+
+
         visionController.CloseCamera(); // Stop using CPU resources
 
         // Run the pre-selected sequence
