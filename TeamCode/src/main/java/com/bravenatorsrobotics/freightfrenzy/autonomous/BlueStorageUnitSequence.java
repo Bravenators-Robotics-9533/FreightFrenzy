@@ -34,7 +34,18 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         robot.drive.TurnDegrees(0.75, 90, AbstractDrive.TurnDirection.CLOCKWISE);
 
         // Lift the lift
-        auto.liftController.GoToStage(LiftController.LiftStage.STAGE_3); // TODO: Toggleable Lift Stage
+        switch (auto.GetAllianceShippingElementLocation()) {
+            case LEFT: // Position 1
+                auto.liftController.GoToStage(LiftController.LiftStage.STAGE_1);
+                break;
+            case CENTER: // Position 2
+                auto.liftController.GoToStage(LiftController.LiftStage.STAGE_2);
+                break;
+            case RIGHT: // Position 3
+            default:
+                auto.liftController.GoToStage(LiftController.LiftStage.STAGE_3);
+                break;
+        }
 
         // Drive up to the alliance shipping hub
         robot.drive.DriveByInches(0.5, -INCHES_TO_SHIPPING_HUB);

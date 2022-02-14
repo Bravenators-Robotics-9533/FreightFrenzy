@@ -25,6 +25,9 @@ public class Auto extends AutonomousMode<MecanumDrive> {
     private VisionController visionController;
     private AllianceShippingElementPipeline visionPipeline;
 
+    private AllianceShippingElementPipeline.AllianceShippingElementLocation elementLocation =
+            AllianceShippingElementPipeline.AllianceShippingElementLocation.UNIDENTIFIED;
+
     public DcMotorEx turnTableSpinner;
 
     public RevColorSensorV3 sideDistanceSensor;
@@ -73,12 +76,16 @@ public class Auto extends AutonomousMode<MecanumDrive> {
         visionController.OpenCameraToPipeline(visionPipeline);
     }
 
+    public AllianceShippingElementPipeline.AllianceShippingElementLocation GetAllianceShippingElementLocation() {
+        return this.elementLocation;
+    }
+
     @Override
     public void OnStart() {
         telemetry.addData("Shipping Element Location", visionPipeline.GetAllianceShippingElementLocation().name());
         telemetry.update();
 
-
+        elementLocation = visionPipeline.GetAllianceShippingElementLocation();
 
         visionController.CloseCamera(); // Stop using CPU resources
 
