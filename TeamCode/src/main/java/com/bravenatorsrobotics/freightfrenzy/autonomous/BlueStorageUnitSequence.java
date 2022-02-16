@@ -10,13 +10,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
 
     private static final double DISTANCE_TO_LINE_UP_SHIPPING_HUB = 24;
-    private static final double INCHES_TO_SHIPPING_HUB = 7;
+    private static final double INCHES_TO_SHIPPING_HUB = 8;
     private static final double INCHES_TO_WALL = 48.0;
-    private static final double INCHES_TO_DUCK_SPINNER = 12.0;
-    private static final double INCHES_TO_PARK = 18.0;
+    private static final double INCHES_TO_DUCK_SPINNER = 11.0;
+    private static final double INCHES_TO_PARK = 19.50;
 
     private static final int DUMP_TIME = 600;
-    private static final int DUCK_SPIN_TIME = 2000;
+    private static final int DUCK_SPIN_TIME = 2250;
+
+    private static final double LEVEL_1_DISTANCE_OFFSET = 3.50;
+    private static final double LEVEL_2_DISTANCE_OFFSET = 2.0;
 
     public BlueStorageUnitSequence(Auto auto) {
         super(auto);
@@ -25,7 +28,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
     @Override
     public void RunSequence() {
         // Strafe away from the wall
-        robot.drive.StrafeInches(0.75, -12.0);
+        robot.drive.StrafeInches(0.5, -12.0);
 
         // Drive towards the shipping hub
         robot.drive.DriveByInches(0.75, -DISTANCE_TO_LINE_UP_SHIPPING_HUB);
@@ -33,13 +36,17 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         // Turn 90 degrees CW
         robot.drive.TurnDegrees(0.75, 90, AbstractDrive.TurnDirection.CLOCKWISE);
 
+        double driveOffset = 0.0;
+
         // Lift the lift
         switch (auto.GetAllianceShippingElementLocation()) {
             case LEFT: // Position 1
                 auto.liftController.GoToStage(LiftController.LiftStage.STAGE_1);
+                driveOffset = LEVEL_1_DISTANCE_OFFSET;
                 break;
             case CENTER: // Position 2
                 auto.liftController.GoToStage(LiftController.LiftStage.STAGE_2);
+                driveOffset = LEVEL_2_DISTANCE_OFFSET;
                 break;
             case RIGHT: // Position 3
             default:
@@ -48,7 +55,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         }
 
         // Drive up to the alliance shipping hub
-        robot.drive.DriveByInches(0.5, -INCHES_TO_SHIPPING_HUB);
+        robot.drive.DriveByInches(0.5, -INCHES_TO_SHIPPING_HUB - driveOffset);
 
         sleep(300);
 
@@ -73,7 +80,7 @@ public class BlueStorageUnitSequence extends AbstractAutonomousSequence {
         robot.drive.StrafeInches(0.5, -INCHES_TO_DUCK_SPINNER);
 
         // Spin the duck
-        auto.turnTableSpinner.setPower(-1);
+        auto.turnTableSpinner.setPower(-0.75);
         sleep(DUCK_SPIN_TIME);
         auto.turnTableSpinner.setPower(0);
 

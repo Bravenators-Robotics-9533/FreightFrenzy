@@ -40,6 +40,7 @@ public class Robot<DriveType extends AbstractDrive> {
             }
 
             this.driveMotors[i] = opMode.hardwareMap.get(DcMotorEx.class, specifications.robotMotors[i]);
+            this.driveMotors[i].setTargetPositionTolerance(specifications.targetPositionTolerance);
             if(shouldReverse)
                 this.driveMotors[i].setDirection(DcMotorSimple.Direction.REVERSE);
         }

@@ -20,6 +20,8 @@ public class Specifications extends RobotSpecifications {
         this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
         this.shouldTunePIDF = false;
         this.debugModeEnabled = true;
+
+        this.targetPositionTolerance = 15;
     }
 
 }

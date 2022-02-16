@@ -46,6 +46,11 @@ public class RobotSpecifications {
     public int maxVelocity = -1; // Run the max velocity test to figure out
 
     /**
+     * The configurable target position tolerance for the robot chassis
+     */
+    public int targetPositionTolerance = 5;
+
+    /**
      * Enabling debug mode will print out different text to the screen.
      * This information is useful in debugging. Disabling this will make it more performance efficient
      * for competitions.
